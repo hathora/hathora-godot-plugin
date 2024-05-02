@@ -1,0 +1,9 @@
+# Godot 4+ specific ignores
+.godot/
+
+.hathora/
+*.DS_Store
+export_presets.cfg
+addons/explore-editor-theme
+addons/plugin_refresher
+.hathora_config

@@ -1,0 +1,32 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="HathoraSDK"
+run/main_scene="res://test/test.tscn"
+config/features=PackedStringArray("4.3", "Forward Plus")
+config/icon="res://icon.svg"
+
+[autoload]
+
+HathoraSDK="*res://addons/hathora/sdk/client.gd"
+
+[display]
+
+window/stretch/scale=2.0
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/hathora/plugin/plugin.cfg", "res://addons/hathora/sdk/plugin.cfg")
+
+[hathora]
+
+application_id="app-ee839683-5176-4442-b088-7045cfcf0f48"
