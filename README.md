@@ -193,3 +193,9 @@ Get help and ask questions in our active Discord community:
 ## Version compatibility
 
 This addon is compatible with Godot 4.X
+
+## Credits
+
+**Davide Di Staso** (Lead developer - Godot plugin & SDK)
+
+**Justin Chu**
