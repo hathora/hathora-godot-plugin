@@ -42,7 +42,7 @@ After installing the addon, open the Project Settings, and enable it under the P
 The plugin supports Linux x86_64 or Linux x86_32 export presets
 
 > [!TIP]
-> For instructios on how to set up your export preset, see [Godot's tutorial on exporting for dedicated servers](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_dedicated_servers.html)
+> For instructions on how to set up your export preset, see [Godot's tutorial on exporting for dedicated servers](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_dedicated_servers.html)
 
 ### 5. Refresh the export presets in the plugin
 Your newly created export preset will appear
@@ -50,10 +50,12 @@ Your newly created export preset will appear
 <img src="images/build_deploy.png" width="400" />
 
 ### 6. Press `Generate Server Build`
-### 7. Inspect the logs
-Ensure the build was successful
-### 8. Adjust the Deployment Settings
-The container port should match the port your server is listening on. In Godot, the server port is usually specified when calling the create_server function on an ENetMultiplayerPeer instance, like so:
+Note: this step will automatically generate a Dockerfile for you, which should work out of the box. You can extend this Dockerfile as needed in the future. For more on Dcokerfiles, check out [these docs](https://hathora.dev/docs/guides/create-dockerfile).
+
+To confirm that the build was generated successfully, you can check out the "**Generate Server Build logs**" output in the plugin.
+
+### 7. Adjust the Deployment Settings
+The "Container port" you enter should match the port your server is listening on. In Godot, the server port is usually specified when calling the `create_server()` function on an ENetMultiplayerPeer instance, like so:
 ```gdscript
 const SERVER_PORT = 7777
 
@@ -66,10 +68,17 @@ func start_server() -> void:
 		return
 	multiplayer.multiplayer_peer = peer
 ```
-### 9. Press `Deploy to Hathora`
-The plugin will automatically upload your server build to Hathora. It may take a few minutes.
-### 10. Press `Create Room`
-Connect to the given host and port to test your new build
+
+Also, [ENetMultiplayerPeer](https://docs.godotengine.org/en/stable/classes/class_enetmultiplayerpeer.html) uses UDP for its connections, so for this example you settings should be:
+
+- Container port: `7777`
+- Transport type: `UDP`
+
+### 8. Press `Deploy to Hathora`
+The plugin will automatically upload your server build and deploy it on Hathora. It may take a few minutes.
+
+### 9. Press `Create Room`
+Hathora will spin up a server instance and will return a `host:port` (e.g. `d405b3.edge.hathora.dev:58554`) for clients to connect to. Once you are able to test an end-to-end deployment and connection, you can use the Hathora Godot SDK to fully integrate with your game!
 
 ## SDK endpoints
 The SDK includes a HathoraSDK autoload, with the following functions:
