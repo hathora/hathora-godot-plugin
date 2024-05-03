@@ -15,46 +15,47 @@ This README covers:
 * [SDK Example usage](#sdk-example-usage)
 
 ## Installation
-There are two ways to get the addon:
-1. AssetLib: simply open your Godot project and download "Hathora Godot" from the AssetLib. Choose whether to install the SDK, the plugin, or both
-
-2. GitHub releases page: download the addon, unzip, and move the resulting folder to your Godot project root. The contents of the addon should be at `<your-project-root>/addons/hathora`
+Download the addon from the [releases page](https://github.com/hathora/hathora-godot-plugin/releases/latest), unzip, and move the resulting folder to your Godot project root. The `plugin` and `sdk` folders should be inside `<your-project-root>/addons/hathora`. The plugin and SDK are independent, you do not need to install both.
 
 After installing the addon, open the Project Settings, and enable it under the Plugins tab.
 
 <img src="images/enable_plugin.png" width="600" />
 
 ## First deployment
-### 1. Press `Login to Hathora` and complete the login on the browser window that opens
+### 1. Login
+Press **"Login to Hathora"** and complete the login on the browser window that opens
 
 <img src="images/login_account.png" width="400" />
 
-### 2. Press `Console` to open the Hathora Console and create a new application
+### 2. Create a new application
+Press **"Console"** to open the Hathora Console and create a new application
 
 <img src="images/create_app_1.png" width="400" />
 <img src="images/create_app_2.png" width="600" />
 
-### 3. Refresh the target applications in the plugin, your newly created application will appear
+Refresh the target applications in the plugin, your newly created application will appear
 
 <img src="images/select_target.png" width="400" />
 
-### 4. Create an export preset for your game
+### 3. Create an export preset
 The plugin supports Linux x86_64 or Linux x86_32 export presets
+
+<img src="images/create_preset.png" width="400" />
 
 > [!TIP]
 > For instructions on how to set up your export preset, see [Godot's tutorial on exporting for dedicated servers](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_dedicated_servers.html)
 
-### 5. Refresh the export presets in the plugin
-Your newly created export preset will appear
+Once you have created an export preset, go back to the plugin, refresh the export presets list and select your newly created preset.
 
-<img src="images/build_deploy.png" width="400" />
-
-### 6. Press `Generate Server Build`
-Note: this step will automatically generate a Dockerfile for you, which should work out of the box. You can extend this Dockerfile as needed in the future. For more on Dcokerfiles, check out [these docs](https://hathora.dev/docs/guides/create-dockerfile).
+### 4. Generate a server build
+Press **"Generate Server Build"**
+> [!TIP] This step will automatically generate a Dockerfile for you, which should work out of the box. You can extend this Dockerfile as needed in the future. For more on Dockerfiles, check out [these docs](https://hathora.dev/docs/guides/create-dockerfile).
 
 To confirm that the build was generated successfully, you can check out the "**Generate Server Build logs**" output in the plugin.
 
-### 7. Adjust the Deployment Settings
+<img src="images/build_deploy.png" width="400" />
+
+### 5. Adjust the Deployment Settings
 The "Container port" you enter should match the port your server is listening on. In Godot, the server port is usually specified when calling the `create_server()` function on an ENetMultiplayerPeer instance, like so:
 ```gdscript
 const SERVER_PORT = 7777
@@ -69,16 +70,16 @@ func start_server() -> void:
 	multiplayer.multiplayer_peer = peer
 ```
 
-Also, [ENetMultiplayerPeer](https://docs.godotengine.org/en/stable/classes/class_enetmultiplayerpeer.html) uses UDP for its connections, so for this example you settings should be:
+Also, [ENetMultiplayerPeer](https://docs.godotengine.org/en/stable/classes/class_enetmultiplayerpeer.html) uses UDP for its connections, so for this example your settings should be:
 
 - Container port: `7777`
 - Transport type: `UDP`
 
-### 8. Press `Deploy to Hathora`
-The plugin will automatically upload your server build and deploy it on Hathora. It may take a few minutes.
+### 6. Deploy
+Press **"Deploy to Hathora"**, the plugin will automatically upload your server build and deploy it on Hathora. It may take a few minutes.
 
-### 9. Press `Create Room`
-Hathora will spin up a server instance and will return a `host:port` (e.g. `d405b3.edge.hathora.dev:58554`) for clients to connect to. Once you are able to test an end-to-end deployment and connection, you can use the Hathora Godot SDK to fully integrate with your game!
+### 7. Test your deployment
+When you press **"Create Room"**, Hathora will spin up a server instance and will return a `host:port` (e.g. `d405b3.edge.hathora.dev:58554`) for clients to connect to. Once you are able to test an end-to-end deployment and connection, you can use the Hathora Godot SDK to fully integrate with your game!
 
 ## SDK endpoints
 The SDK includes a HathoraSDK autoload, with the following functions:
@@ -108,16 +109,16 @@ The SDK includes a HathoraSDK autoload, with the following functions:
 
 For more information, see the [Hathora API documentation](http://hathora.dev/api).
 ## Configuration
-Configuration is saved in two locations: the appId is in the Godot project settings, and the devToken is in the config gile `<project-root>/.hathora/config`.
+Configuration is saved in two locations: the appId is in the Godot project settings, and the devToken is in the config file `<project-root>/.hathora/config` or at `<project-root>/hathora_config`.
 ### Specifying an appId
 The SDK uses the appId specified under `Project Settings > Hathora > App Id`. When you select a target application in the plugin, its appId is automatically applied to the project settings. Alternatively, you can specify an appId by calling `HathoraSDK.set_app_id(app_id)`.
 
 ### Specifying a devToken
 
 > [!WARNING]
-> The devToken gives priviledged access to your Hathora account. Never include the devToken in client builds or in your versioning system.
+> The devToken gives privileged access to your Hathora account. Never include the devToken in client builds or in your versioning system.
 
-When the SDK or the plugin are enabled in your project for the first time, a config file is generated at `<project-root>/.hathora/config`. For endpoints that require it, the SDK uses the devToken specified at `<project-root>/.hathora/config`. You may edit this file manually, or by using the plugin (`Developer Settings > Developer token`). Alternatively, you can call `HathoraSDK.set_dev_token(dev_token)`. By default, Godot project exports will omit the config file. If `Include Hathora config` is enabled while generating a server build through the plugin, a copy of the devToken will be saved at `<project-root>/hathora_config`.
+When the SDK or the plugin are enabled in your project for the first time, a config file is generated at `<project-root>/.hathora/config`. For endpoints that require it, the SDK uses the devToken specified at `<project-root>/.hathora/config`. You may edit this file manually, or by using the plugin (`Developer Settings > Developer token`). Alternatively, you can call `HathoraSDK.set_dev_token(dev_token)`. By default, Godot project exports will omit the config file. If "Include Hathora config" is enabled while generating a server build through the plugin, a copy of the devToken will be saved at `<project-root>/hathora_config`. The SDK automatically looks for a devToken at `<project-root>/hathora_config` on startup.
 
 ## Calling API endpoints
 ```gdscript
@@ -142,7 +143,7 @@ func create_lobby() -> bool:
 Note the `async()` call. Calling `HathoraSDK.lobby_v3.create()` returns a Request object. Calling `async()` on the Request object allows you to pause the execution of the function by using the `await` keyword, until a result is obtained. The `is_error()` function returns true if there was an error. Finally, `lobby_result.as_error().message` allows you to store the error message and display it to the user. All endpoints contained in the SDK can be called using this pattern.
 
 ## SDK Example usage
-This snippet shows how to login and join a lobby by its shortCode:
+This snippet shows how to log in and join a lobby by its shortCode:
 ```gdscript
 var player_nickname = "Nickname"
 var lobby_short_code = "1234"
