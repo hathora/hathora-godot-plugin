@@ -13,6 +13,7 @@ This README covers:
 * [Configuration](#configuration)
 * [Calling API endpoints](#calling-api-endpoints)
 * [SDK Example usage](#sdk-example-usage)
+* [Version compatibility](#version-compatibility)
 
 ## Installation
 Download the addon from the [releases page](https://github.com/hathora/hathora-godot-plugin/releases/latest), unzip, and move the resulting folder to your Godot project root. The `plugin` and `sdk` folders should be inside `<your-project-root>/addons/hathora`. The plugin and SDK are independent, you do not need to install both.
@@ -45,11 +46,12 @@ The plugin supports Linux x86_64 or Linux x86_32 export presets
 > [!TIP]
 > For instructions on how to set up your export preset, see [Godot's tutorial on exporting for dedicated servers](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_dedicated_servers.html)
 
-Once you have created an export preset, go back to the plugin, refresh the export presets list and select your newly created preset.
+Open Godot's Export menu and create a new preset. Once you have created an export preset, go back to the plugin, refresh the export presets list, and select your newly created preset.
 
 ### 4. Generate a server build
 Press **"Generate Server Build"**
-> [!TIP] This step will automatically generate a Dockerfile for you, which should work out of the box. You can extend this Dockerfile as needed in the future. For more on Dockerfiles, check out [these docs](https://hathora.dev/docs/guides/create-dockerfile).
+> [!TIP]
+> This step will automatically generate a Dockerfile for you, which should work out of the box. You can extend this Dockerfile as needed in the future. For more on Dockerfiles, check out [these docs](https://hathora.dev/docs/guides/create-dockerfile).
 
 To confirm that the build was generated successfully, you can check out the "**Generate Server Build logs**" output in the plugin.
 
@@ -202,7 +204,7 @@ Get help and ask questions in our active Discord community:
 
 ## Version compatibility
 
-This addon is compatible with Godot 4.X
+This addon is compatible with Godot 4.2+
 
 ## Credits
 
