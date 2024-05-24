@@ -34,7 +34,7 @@ func _init(run_async: Callable, run_blocking:=Callable()):
 	_run_blocking = run_blocking
 
 
-func _w4_client_promise():
+func _hathora_client_promise():
 	pass
 
 
@@ -53,7 +53,7 @@ func async():
 	for c in chain:
 		old_results.append(result)
 		result = await c.call(result)
-		if result is Object and result.has_method("_w4_client_promise"):
+		if result is Object and result.has_method("_hathora_client_promise"):
 			result = await result.async()
 	if status != Status.FAILED:
 		status = Status.COMPLETED
@@ -67,7 +67,7 @@ func blocking(poll_delay_usec:=1000):
 		result = _run_blocking.call(poll_delay_usec, _fail)
 	for c in chain:
 		result = c.call(result)
-		if result is Object and result.has_method("_w4_client_promise"):
+		if result is Object and result.has_method("_hathora_client_promise"):
 			result = result.blocking(poll_delay_usec)
 	if status != Status.FAILED:
 		status = Status.COMPLETED
@@ -85,7 +85,7 @@ static func _make_promise(callable: Callable):
 
 ## Creates a new promise that will resolve the given array of promises in sequence.
 static func sequence(promises: Array):
-	if promises.any(func(e): return not e is Callable and not e.has_method("_w4_client_promise")):
+	if promises.any(func(e): return not e is Callable and not e.has_method("_hathora_client_promise")):
 		push_error("The input must be an array of promises")
 		return null
 	var run_async = func (fail):

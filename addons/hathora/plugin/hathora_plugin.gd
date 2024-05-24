@@ -2,7 +2,7 @@
 extends EditorPlugin
 
 const DotEnv = preload("../plugin/dotenv.gd")
-const BASE = "w4games/w4rm"
+const BASE = "hathora"
 const HathoraProjectSettings = preload("hathora_project_settings.gd")
 # MARK: Plugin
 var control_ui: Control
