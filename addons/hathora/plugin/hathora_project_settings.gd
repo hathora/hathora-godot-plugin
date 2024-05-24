@@ -40,10 +40,6 @@ static func get_s(key, def=""):
 	var fk = "%s/%s" % [BASE, key]
 	return ProjectSettings.get_setting(fk) if ProjectSettings.has_setting(fk) else def
 
-static func get_m(key, def=""):
-	var es = EditorInterface.get_editor_settings()
-	return es.get_project_metadata("w4games", key, def)
-
 static func set_s(key, value, save=true):
 	var fk = "%s/%s" % [BASE, key]
 	ProjectSettings.set_setting(fk, value)
@@ -53,7 +49,3 @@ static func set_s(key, value, save=true):
 static func set_m(key, value):
 	var es = EditorInterface.get_editor_settings()
 	es.set_project_metadata("hathora", key, value)
-
-func _check_set_metadata(key, value):
-	if typeof(get_m(key)) != typeof(value):
-		set_m(key, value)
