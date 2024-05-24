@@ -26,7 +26,3 @@ window/stretch/scale=2.0
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/hathora/plugin/plugin.cfg", "res://addons/hathora/sdk/plugin.cfg")
-
-[hathora]
-
-application_id="app-ee839683-5176-4442-b088-7045cfcf0f48"
