@@ -17,7 +17,10 @@ static func config():
 	var config_path = get_first_existing_file([CONFIG_PATH_EDITOR, config_path_server_build])
 	
 	if config_path.is_empty():
-		print("[HATHORA] Could not find hathora config at " + CONFIG_PATH_EDITOR + " or at " + config_path_server_build + ". Creating a new config at " + CONFIG_PATH_EDITOR)
+		print("[HATHORA] Hathora config not found " + CONFIG_PATH_EDITOR + " or at " + config_path_server_build + ". You will not have access to API endpoints requiring a devToken.")
+		if not Engine.is_editor_hint():
+			return
+		print("Creating a new config at " + CONFIG_PATH_EDITOR)
 		DirAccess.make_dir_absolute("res://.hathora")
 		var config = ConfigFile.new()
 		var err = config.save(CONFIG_PATH_EDITOR)
@@ -32,6 +35,8 @@ static func config():
 	if err:
 		print("[HATHORA] Error loading config file")
 		return
+		
+	print("[HATHORA] Found Hathora config file at " + config_path)
 		
 static func add(key, value):
 	var config_path_server_build = OS.get_executable_path().get_base_dir().path_join("hathora_config")

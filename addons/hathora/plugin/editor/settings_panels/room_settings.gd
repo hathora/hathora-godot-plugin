@@ -72,7 +72,7 @@ func _get_connecton_info_callback_error(err):
 		owner.reset_token()
 			
 func _create_room_callback_error(err):
-	print("[HATHORA] "+str(err))
+	print("[HATHORA] " + str(err))
 	if err.response_code == 401:
 		owner.reset_token()
 

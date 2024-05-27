@@ -33,4 +33,4 @@ func _update_deployment_success(response):
 func _update_deployment_error(err):
 	if err.response_code == 401:
 		owner.reset_token()
-	print("[HATHORA] "+str(err))
+	print("[HATHORA] " + str(err))
