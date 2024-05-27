@@ -2,7 +2,7 @@ extends RefCounted
 
 class_name Hathora
 
-enum Region { SEATTLE, WASHINGTON_DC, CHICAGO, LONDON, FRANKFURT, MUMBAI, SINGAPORE, SYDNEY, TOKYO, SAO_PAULO }
+enum Region { SEATTLE, WASHINGTON_DC, CHICAGO, LONDON, FRANKFURT, MUMBAI, SINGAPORE, SYDNEY, TOKYO, SAO_PAULO, LOS_ANGELES, DALLAS }
 enum TransportType { UDP, TCP, TLS }
 enum Plan { TINY, SMALL, MEDIUM, LARGE }
 enum Visibility { PRIVATE, PUBLIC, LOCAL }
@@ -36,6 +36,8 @@ const REGION_NAMES = {
 	Region.SYDNEY: "Sydney",
 	Region.TOKYO: "Tokyo",
 	Region.SAO_PAULO: "Sao_Paulo",
+	Region.LOS_ANGELES: "Los_Angeles",
+	Region.DALLAS: "Dallas"
 }
 
 const TRANSPORT_TYPES = {
