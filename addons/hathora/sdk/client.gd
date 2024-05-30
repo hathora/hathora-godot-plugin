@@ -1,78 +1,70 @@
 extends Node
 
-const Client = preload("../sdk/rest-client/client.gd")
-const Lobby = preload("../sdk/apis/lobby_v3.gd")
-const Room = preload("../sdk/apis/room_v2.gd")
-const Auth = preload("../sdk/apis/auth_v1.gd")
-const Processes = preload("../sdk/apis/processes_v2.gd")
-const Discovery = preload("../sdk/apis/discovery_v1.gd")
-const DotEnv = preload("../sdk/dotenv.gd")
-const HathoraProjectSettings = preload("res://addons/hathora/sdk/hathora_project_settings.gd")
+## SDK to interact with the Hathora API
 
-var lobby_v3 : Lobby
-var room_v2 : Room
-var auth_v1 : Auth
-var processes_v2 : Processes
-var discovery_v1 : Discovery
+const _Client = preload("../sdk/rest-client/client.gd")
+const _Lobby = preload("../sdk/apis/lobby_v3.gd")
+const _Room = preload("../sdk/apis/room_v2.gd")
+const _Auth = preload("../sdk/apis/auth_v1.gd")
+const _Processes = preload("../sdk/apis/processes_v2.gd")
+const _Discovery = preload("../sdk/apis/discovery_v2.gd")
+const _DotEnv = preload("../sdk/dotenv.gd")
+const _HathoraProjectSettings = preload("res://addons/hathora/sdk/hathora_project_settings.gd")
 
-var no_auth_client: Client
-var player_client: Client
-var dev_client : Client
+## Operations to create and manage lobbies using our Lobby Service.
+var lobby_v3 : _Lobby
 
-var log_function: Callable
+## Operations to create, manage, and connect to rooms.
+var room_v2 : _Room
+
+## Operations that allow you to generate a Hathora-signed JSON web token (JWT) for player authentication.
+var auth_v1 : _Auth
+
+## Operations to get data on active and stopped processes.
+var processes_v2 : _Processes
+
+## Service that allows clients to directly ping all Hathora regions to get latency information
+var discovery_v2 : _Discovery
+
+var _no_auth_client: _Client
+var _player_client: _Client
+var _dev_client : _Client
 
 func _init():
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	DotEnv.config()
+	_DotEnv.config()
 	var node = self
 	var url = "https://api.hathora.dev"
-	var app_id = HathoraProjectSettings.get_s("application_id")
+	var app_id = _HathoraProjectSettings.get_s("application_id")
 	var tls_options = null
 	
 	# Dev endpoints
-	dev_client = Client.new(node, url, {}, tls_options)
-	room_v2 = Room.new(dev_client, "/rooms/v2/" + app_id)
-	processes_v2 = Processes.new(dev_client, "/processes/v2/" + app_id)
+	_dev_client = _Client.new(node, url, {}, tls_options)
+	room_v2 = _Room.new(_dev_client, "/rooms/v2/".path_join(app_id))
+	processes_v2 = _Processes.new(_dev_client, "/processes/v2/".path_join(app_id))
 	# Setting the dev token if found in DotEnv
-	if not DotEnv.get_k("HATHORA_DEVELOPER_TOKEN").is_empty():
-		set_dev_token(DotEnv.get_k("HATHORA_DEVELOPER_TOKEN"))
+	if not _DotEnv.get_k("HATHORA_DEVELOPER_TOKEN").is_empty():
+		set_dev_token(_DotEnv.get_k("HATHORA_DEVELOPER_TOKEN"))
 	# Player endpoints
-	player_client = Client.new(node, url, {}, tls_options)
-	lobby_v3 = Lobby.new(player_client, "/lobby/v3/" + app_id)
-	discovery_v1 = Discovery.new(player_client, "/discovery/v1")
-	auth_v1 = Auth.new(player_client, "/auth/v1/" + app_id)
+	_player_client = _Client.new(node, url, {}, tls_options)
+	lobby_v3 = _Lobby.new(_player_client, "/lobby/v3/".path_join(app_id))
+	discovery_v2 = _Discovery.new(_player_client, "/discovery/v2/")
+	auth_v1 = _Auth.new(_player_client, "/auth/v1/".path_join(app_id))
 
-
+## Set a [param dev_token]. Not recommended, specify the devToken at [code]res://.hathora/config[/code] or at [code]res://hathora_config[/code] instead.
+## [br][br][b]The devToken gives privileged access to your Hathora account. Never include the devToken in client builds or in your versioning system.[/b]
 func set_dev_token(dev_token: String) -> void:
-	dev_client.set_header("Authorization", "Bearer " + dev_token)
+	_dev_client.set_header("Authorization", "Bearer " + dev_token)
 
-
+## Set an [param app_id]. Not recommended, specify the appId in the Godot ProjectSettings instead.
 func set_app_id(app_id: String) -> void:
-	room_v2 = Room.new(dev_client, "/rooms/v2/" + app_id)
-	processes_v2 = Processes.new(dev_client, "/processes/v2/" + app_id)
-	lobby_v3 = Lobby.new(player_client, "/lobby/v3/" + app_id)
-	auth_v1 = Auth.new(no_auth_client, "/auth/v1/" + app_id)
+	room_v2 = _Room.new(_dev_client, "/rooms/v2/".path_join(app_id))
+	processes_v2 = _Processes.new(_dev_client, "/processes/v2/".path_join(app_id))
+	lobby_v3 = _Lobby.new(_player_client, "/lobby/v3/".path_join(app_id))
+	auth_v1 = _Auth.new(_no_auth_client, "/auth/v1/".path_join(app_id))
 
-
+## Set [param tls_options] for the SDK client.
 func set_tls_options(tls_options: TLSOptions) -> void:
-	dev_client.default_tls_options = tls_options
-	player_client.default_tls_options = tls_options
-	no_auth_client.default_tls_options = tls_options
-	
-	
-# Log and debug functions
-func debug(msg) -> void:
-	if log_function.is_valid(): log_function.call(0, msg)
-
-
-func warning(msg) -> void:
-	if log_function.is_valid(): log_function.call(1, msg)
-
-
-func error(msg) -> void:
-	if log_function.is_valid(): log_function.call(2, msg)
-
-
-func fail() -> void:
-	breakpoint
-	pass
+	_dev_client.default_tls_options = tls_options
+	_player_client.default_tls_options = tls_options
+	_no_auth_client.default_tls_options = tls_options
