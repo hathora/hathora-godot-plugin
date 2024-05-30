@@ -60,34 +60,34 @@ static func _parse_head_result(result) -> PolyResult:
 
 ## Makes a GET request.
 func GET(path, query : Dictionary = {}, extra_headers : Dictionary = {}, binary:=false) -> Request:
-	return client.GET(endpoint + path, query, extra_headers).then(parse_result.bind(binary))
+	return client.GET(endpoint.path_join(path), query, extra_headers).then(parse_result.bind(binary))
 
 
 ## Makes a HEAD request.
 func HEAD(path, query : Dictionary = {}, extra_headers : Dictionary = {}) -> Request:
-	return client.HEAD(endpoint + path, query, extra_headers).then(_parse_head_result)
+	return client.HEAD(endpoint.path_join(path), query, extra_headers).then(_parse_head_result)
 
 
 ## Makes a raw GET request, that returns binary data.
 func GET_RAW(path, query : Dictionary = {}, extra_headers : Dictionary = {}) -> Request:
-	return client.GET(endpoint + path, query, extra_headers).then(parse_result.bind(true))
+	return client.GET(endpoint.path_join(path), query, extra_headers).then(parse_result.bind(true))
 
 
 ## Makes a POST request.
 func POST(path, data = null, query : Dictionary = {}, extra_headers : Dictionary = {}, binary:=false) -> Request:
-	return client.POST(endpoint + path, data, query, extra_headers).then(parse_result.bind(binary))
+	return client.POST(endpoint.path_join(path), data, query, extra_headers).then(parse_result.bind(binary))
 
 
 ## Makes a PUT request.
 func PUT(path, data = null, query : Dictionary = {}, extra_headers : Dictionary = {}, binary:=false) -> Request:
-	return client.PUT(endpoint + path, data, query, extra_headers).then(parse_result.bind(binary))
+	return client.PUT(endpoint.path_join(path), data, query, extra_headers).then(parse_result.bind(binary))
 
 
 ## Makes a PATCH request.
 func PATCH(path, data = null, query : Dictionary = {}, extra_headers : Dictionary = {}, binary:=false) -> Request:
-	return client.PATCH(endpoint + path, data, query, extra_headers).then(parse_result.bind(binary))
+	return client.PATCH(endpoint.path_join(path), data, query, extra_headers).then(parse_result.bind(binary))
 
 
 ## Makes a DELETE request.
 func DELETE(path, data = null, query : Dictionary = {}, extra_headers : Dictionary = {}, binary:=false) -> Request:
-	return client.DELETE(endpoint + path, data, query, extra_headers).then(parse_result.bind(binary))
+	return client.DELETE(endpoint.path_join(path), data, query, extra_headers).then(parse_result.bind(binary))
