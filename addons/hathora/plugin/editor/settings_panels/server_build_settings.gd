@@ -52,8 +52,6 @@ func _make_settings() -> void:
 	add_spacer(false)
 	%BuildDirFileDialog.dir_selected.connect(_on_dir_selected)
 	var i = get_child_count()
-	move_child(%BuildLogsSectionToggle, i)
-	move_child(%BuildLogsContainer, i)
 	add_spacer(false)
 	ProjectSettings.settings_changed.connect(_on_project_settings_changed)
 
@@ -116,28 +114,24 @@ func _on_generate_server_build_button_pressed():
 
 
 func _generate_server_build() -> bool:
-	%ServerBuildLogs.clear()
-	%BuildLogsSectionToggle.show()
-	%BuildLogsSectionToggle.button_pressed = true
-	
 	if HathoraProjectSettings.get_s("build_directory_path").is_empty():
-		%ServerBuildLogs.show_message("Build directory path required")
+		print("[HATHORA] Build directory path required")
 		return false
 	
 	if not DirAccess.dir_exists_absolute(HathoraProjectSettings.get_s("build_directory_path")):
-		%ServerBuildLogs.show_message("Build directory path does not exist")
+		print("[HATHORA] Build directory path does not exist")
 		return false
 	
 	if HathoraProjectSettings.get_s("build_filename").is_empty():
-		%ServerBuildLogs.show_message("Build filename required")
+		print("[HATHORA] Build filename required")
 		return false
 		
 	if HathoraProjectSettings.get_s("build_filename").get_extension() != "pck":
-		%ServerBuildLogs.show_message("Build filename must end in .pck")
+		print("[HATHORA] Build filename must end in .pck")
 		return false
 		
 	if %ServerBuildSettings.selected_preset.is_empty():
-		%ServerBuildLogs.show_message("Must select an existing Linux export preset")
+		print("[HATHORA] Must select an existing Linux export preset")
 		return false
 	
 	var build_name : String = HathoraProjectSettings.get_s("build_filename")
@@ -186,7 +180,7 @@ func _generate_server_build() -> bool:
 		%DeploymentSettings.path_to_tar = output_tar_path
 		HathoraProjectSettings.set_s("path_to_tar_file", output_tar_path)
 		
-		%ServerBuildLogs.show_message("Updated path to tar file in the Deployment Settings")
+		print("[HATHORA] Updated path to tar file in the Deployment Settings")
 		return true
 	return true
 
@@ -202,11 +196,11 @@ func _on_dir_selected(dir: String) -> void:
 
 
 func _print_success():
-	%ServerBuildLogs.show_success("[b]SUCCESS at %s [/b]" % Time.get_time_string_from_system())
+	print_rich("[color=%s][HATHORA] [b]BUILD SUCCESS at %s [/b][/color]" % [get_theme_color("success_color", "Editor").to_html(), Time.get_time_string_from_system()])
 
 
 func _print_fail():
-	%ServerBuildLogs.show_error("[b]ERROR at %s [/b]" % Time.get_time_string_from_system())
+	print_rich("[color=%s][HATHORA] [b]BUILD ERROR at %s [/b][/color]" % [get_theme_color("error_color", "Editor").to_html(), Time.get_time_string_from_system()])
 
 
 func copy_config_file(from_path: String, to_path: String) -> bool:
@@ -214,15 +208,15 @@ func copy_config_file(from_path: String, to_path: String) -> bool:
 	var err = config.load(from_path)
 	
 	if err:
-		%ServerBuildLogs.show_message("Could not find Hathora config file")
+		print("[HATHORA] Could not find Hathora config file")
 		return false
 
 	err = config.save(to_path)
 	
 	if err != OK:
-		%ServerBuildLogs.show_message("Error saving the config file")
+		print("[HATHORA] Error saving the config file")
 		return false
 
 	var absolute_output_path = ProjectSettings.globalize_path(to_path)
-	%ServerBuildLogs.show_success("Saved Hathora config file at [url=%s]%s[/url]" % [absolute_output_path, absolute_output_path])
+	print_rich("[color=%s][HATHORA] Saved Hathora config file at [url=%s]%s[/url][/color]" % [get_theme_color("success_color", "Editor").to_html(), absolute_output_path, absolute_output_path])
 	return true

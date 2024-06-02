@@ -2,15 +2,13 @@
 extends Node
 ## Takes a Dockerfile template txt file, inserts ENV variables and saves to disk
 
-@export var log_text: RichTextLabel
-
 func write_dockerfile(build_filename: String, path: String, overwrite: bool = false, debug: bool = false):
 	# The Dockerfile template txt file
 	var docker_template_file = FileAccess.open("res://addons/hathora/plugin/dockerfile_template.txt", FileAccess.READ)
 	
 	if not docker_template_file:
 		var error = FileAccess.get_open_error()
-		log_text.show_error("Error opening Dockerfile template: "+error_string(error))
+		push_error("[HATHORA] Error opening Dockerfile template: "+error_string(error))
 		return false
 	
 	var docker_template_content = docker_template_file.get_as_text()
@@ -22,19 +20,19 @@ func write_dockerfile(build_filename: String, path: String, overwrite: bool = fa
 		"build_file": build_filename})
 	
 	if FileAccess.file_exists(path) and not overwrite:
-		log_text.show_message("Dockerfile found, will not overwrite")
+		print("[HATHORA] Dockerfile found, will not overwrite")
 		return true
 	
 	var file = FileAccess.open(path, FileAccess.WRITE)
 	
 	if file == null:
-		log_text.show_error("Error creating Dockerfile: " + error_string(FileAccess.get_open_error()))
+		push_error("[HATHORA] Error creating Dockerfile: " + error_string(FileAccess.get_open_error()))
 		return false
 	
 	file.store_string(custom_dockerfile)
 	file.close()
 	var absolute_path = ProjectSettings.globalize_path(path)
-	log_text.show_success("Dockerfile generated at [url=%s]%s[/url]" % [absolute_path, absolute_path])
+	print_rich("[color=%s][HATHORA] Dockerfile generated at [url=%s]%s[/url]" % [owner.get_theme_color("success_color", "Editor").to_html(), absolute_path, absolute_path])
 	
 	return true
 	

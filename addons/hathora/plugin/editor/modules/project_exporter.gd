@@ -8,7 +8,7 @@ const EXPORT_PRESETS_PATH = 'res://export_presets.cfg'
 @export var log_text: RichTextLabel
 
 func export(p_build_name: String, p_output_path: String, p_export_preset: String) -> bool:
-	log_text.show_message("Exporting...this can take a few minutes")
+	print("[HATHORA] Exporting...this can take a few minutes")
 	
 	await get_tree().process_frame
 	
@@ -25,10 +25,10 @@ func export(p_build_name: String, p_output_path: String, p_export_preset: String
 	var exit_code = OS.execute(OS.get_executable_path(), args, output, true)
 
 	if exit_code != 0 or _is_dir_empty(p_output_path):
-		log_text.show_error("Error exporting project:" + "\n".join(output))
+		push_error("[HATHORA] Error exporting project:" + "\n".join(output))
 		return false
 	
-	log_text.show_success("Exported the project to [url=%s]%s[/url]" % [absolute_export_path, absolute_export_path])
+	print_rich("[color=%s][HATHORA] Exported the project to [url=%s]%s[/url][/color]" % [owner.get_theme_color("success_color", "Editor").to_html(), absolute_export_path.get_base_dir(), absolute_export_path])
 	return true
 
 
