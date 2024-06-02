@@ -1,9 +1,13 @@
-extends "endpoint.gd"
-
 ## Service that allows clients to directly ping all Hathora regions to get latency information
+extends "endpoint.gd"
 
 ## Returns an array of all regions with a host and port that a client can directly ping.
 ## Open a websocket connection to [code]wss://<host>:<port>/ws[/code] and send a packet. To calculate ping, measure the time it takes to get an echo packet back.
+## [br][br][br][b]If successful, calls to this endpoint return:[/b]
+## [br][br] [Array] of dictionaries. Each element contains:
+## [br]-- [code]port[/code]: [float]
+## [br]-- [code]host[/code]: [String]
+## [br]-- [code]name[/code]: [String]
 func get_ping_service_endpoints():
 	return GET("ping").then(func (result):
 		if result.is_error():

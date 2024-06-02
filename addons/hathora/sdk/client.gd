@@ -1,6 +1,29 @@
-extends Node
+## SDK to interact with the Hathora API.
+## @tutorial: https://hathora.dev/docs/engines/godot
+## @tutorial: https://hathora.dev/api
+## See the properties for the documentation of each endpoint.
+## [br][br]Example usage:
+## [codeblock]
+## func create_lobby() -> bool:
+##      last_error = ""
+## 
+##      # Create a public lobby using a previously obtained playerAuth token
+##      # The function will pause until a result is obtained
+##      var lobby_result = await HathoraSDK.lobby_v3.create(login_token, Hathora.Visibility.PUBLIC, Hathora.Region.FRANKFURT, {}).async()
+## 
+##      # Having obtained a result, the function continues
+##      # If there was an error, store the error message and return
+##      if lobby_result.is_error():
+##           last_error = lobby_result.as_error().message
+##           return false
+## 
+##      # Store the data contained in the Result
+##      lobby_data = result.get_data()
+##      print("Created lobby with roomId ", lobby_data.roomId)
+##      return true
+## [/codeblock]
 
-## SDK to interact with the Hathora API
+extends Node
 
 const _Client = preload("../sdk/rest-client/client.gd")
 const _Lobby = preload("../sdk/apis/lobby_v3.gd")
@@ -52,7 +75,7 @@ func _init():
 	auth_v1 = _Auth.new(_player_client, "/auth/v1/".path_join(app_id))
 
 ## Set a [param dev_token]. Not recommended, specify the devToken at [code]res://.hathora/config[/code] or at [code]res://hathora_config[/code] instead.
-## [br][br][b]The devToken gives privileged access to your Hathora account. Never include the devToken in client builds or in your versioning system.[/b]
+## [br][br][b]Warning:[/b] the devToken gives privileged access to your Hathora account. Never include the devToken in client builds or in your versioning system.
 func set_dev_token(dev_token: String) -> void:
 	_dev_client.set_header("Authorization", "Bearer " + dev_token)
 
