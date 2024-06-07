@@ -34,13 +34,8 @@ func _on_docs_popup_index_pressed(index: int) -> void:
 
 				# Make a small change and save it to refresh the documentation
 				if script:
-					#var source_code = script.source_code
-					# Comment and uncomment the first line to trigger the reload
-					#script.source_code = "# " + source_code
-					#script.source_code = source_code
 					ResourceSaver.save(script, path)
 					
-				#ResourceLoader.load("res://addons/hathora/sdk/client.gd", "", ResourceLoader.CACHE_MODE_REPLACE)
 			EditorInterface.get_script_editor().goto_help("class_name:HathoraSDK")
 			
 
