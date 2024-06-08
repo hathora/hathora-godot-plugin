@@ -33,7 +33,6 @@ vertical_scroll_mode = 2
 [node name="ScrollChild" type="VBoxContainer" parent="Scroll"]
 layout_mode = 2
 size_flags_horizontal = 3
-mouse_force_pass_scroll_events = false
 
 [node name="MarginContainer" type="MarginContainer" parent="Scroll/ScrollChild"]
 layout_mode = 2
@@ -104,11 +103,9 @@ text = "Login to Hathora"
 [node name="MainContentPanel" type="PanelContainer" parent="Scroll/ScrollChild"]
 unique_name_in_owner = true
 layout_mode = 2
-mouse_force_pass_scroll_events = false
 
 [node name="MainContent" type="VBoxContainer" parent="Scroll/ScrollChild/MainContentPanel"]
 layout_mode = 2
-mouse_force_pass_scroll_events = false
 
 [node name="ASCIIArt" type="RichTextLabel" parent="Scroll/ScrollChild/MainContentPanel/MainContent"]
 unique_name_in_owner = true
