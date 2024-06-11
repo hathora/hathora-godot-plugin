@@ -11,7 +11,7 @@ func _ready():
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 	%CreateLobbyButton.pressed.connect(_create_lobby)
 	%LoginButton.pressed.connect(_login_anonymous)
-	%JoinLobbyButton.pressed.connect(_join_lobby_by_room_id)
+	%JoinLobbyButton.pressed.connect(_join_by_room_id)
 	if OS.has_feature("dedicated_server"):
 		print("Starting dedicated server on %s" % SERVER_PORT)
 		start_server()
@@ -24,7 +24,7 @@ func _login_anonymous() -> void:
 		return
 	%PlayerToken.text = res.get_data().token
 
-func _join_lobby_by_room_id() -> void:
+func _join_by_room_id() -> void:
 	print("Polling status of room ", %RoomID.text)
 	var res = await HathoraSDK.room_v2.get_connection_info(%RoomID.text).async()
 	if res.is_error():
@@ -33,7 +33,7 @@ func _join_lobby_by_room_id() -> void:
 	var connection_info = res.get_data()
 	if connection_info.status != Hathora.RoomStatus.ACTIVE:
 		print("Room status: ", str(connection_info.status))
-		_join_lobby_by_room_id()
+		_join_by_room_id()
 		return
 	_connect_to_room(connection_info)
 
@@ -48,7 +48,7 @@ func _connect_to_room(connection_info):
 	await multiplayer.connected_to_server
 
 func _create_lobby():
-	var result = await HathoraSDK.lobby_v3.create(%PlayerToken.text, Hathora.Visibility.PUBLIC, Hathora.Region.FRANKFURT, {}).async()
+	var result = await HathoraSDK.lobby_v3.create(%PlayerToken.text, Hathora.Visibility.PUBLIC, Hathora.Region.FRANKFURT).async()
 	if result.is_error():
 		print("Error creating lobby", result)
 		return
@@ -64,7 +64,7 @@ func leave_game():
 	multiplayer.multiplayer_peer = null
 
 func create_room() -> void:
-	var result = await HathoraSDK.room_v2.create({}, Hathora.Region.CHICAGO).async()
+	var result = await HathoraSDK.room_v2.create(Hathora.Region.CHICAGO).async()
 	if result.is_error():
 		print("Error creating room", result)
 		return
