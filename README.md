@@ -13,6 +13,9 @@ This README covers:
 * [Configuration](#configuration)
 * [Calling API endpoints](#calling-api-endpoints)
 * [SDK Example usage](#sdk-example-usage)
+* [Exporting for the Web](#exporting-for-the-web)
+* [Community demos](#community-demos)
+* [Questions?](#questions)
 * [Version compatibility](#version-compatibility)
 
 ## Installation
@@ -46,14 +49,14 @@ The plugin supports Linux x86_64 or Linux x86_32 export presets
 > [!TIP]
 > For instructions on how to set up your export preset, see [Godot's tutorial on exporting for dedicated servers](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_dedicated_servers.html)
 
-Open Godot's Export menu and create a new preset. Once you have created an export preset, go back to the plugin, refresh the export presets list, and select your newly created preset.
+Open Godot's Export menu and create a new preset. For the test scene to work, you need to choose the **Export as dedicated server** export mode under the **Resources** tab. Once you have created an export preset, go back to the plugin, refresh the export presets list, and select your newly created preset.
 
 ### 4. Generate a server build
 Press **"Generate Server Build"**
 > [!TIP]
 > This step will automatically generate a Dockerfile for you, which should work out of the box. You can extend this Dockerfile as needed in the future. For more on Dockerfiles, check out [these docs](https://hathora.dev/docs/guides/create-dockerfile).
 
-To confirm that the build was generated successfully, you can check out the "**Generate Server Build logs**" output in the plugin.
+To confirm that the build was generated successfully, you can check out the build logs in the output bottom panel.
 
 <img src="images/build_deploy.png" width="400" />
 
@@ -106,8 +109,13 @@ The SDK includes a HathoraSDK autoload, with the following functions:
 * processes_v2
 	* get_info
 	* get_latest
-* discovery_v1
+* discovery_v2
 	* get_ping_service_endpoints
+
+Documentation for the SDK endpoints is available inside the Godot editor. Press **Search Help** and search `hathora/sdk/client`.
+
+<img src="images/sdk_documentation.png"/>
+
 
 For more information, see the [Hathora API documentation](http://hathora.dev/api).
 ## Configuration
@@ -124,25 +132,27 @@ When the SDK or the plugin are enabled in your project for the first time, a con
 
 ## Calling API endpoints
 ```gdscript
+var last_error = ""
+
 func create_lobby() -> bool:
 	last_error = ""
 
 	# Create a public lobby using a previously obtained playerAuth token
 	# The function will pause until a result is obtained
-	var lobby_result = await HathoraSDK.lobby_v3.create(login_token, Hathora.Visibility.PUBLIC, Hathora.Region.FRANKFURT, {}).async()
+	var res = await HathoraSDK.lobby_v3.create(login_token, Hathora.Visibility.PUBLIC, Hathora.Region.FRANKFURT).async()
 	
 	# Having obtained a result, the function continues
 	# If there was an error, store the error message and return
-	if lobby_result.is_error():
-		last_error = lobby_result.as_error().message
+	if res.is_error():
+		last_error = res.as_error().message
 		return false
 
 	# Store the data contained in the Result
-	lobby_data = result.get_data()
+	lobby_data = res.get_data()
 	print("Created lobby with roomId ", lobby_data.roomId)
 	return true
 ```
-Note the `async()` call. Calling `HathoraSDK.lobby_v3.create()` returns a Request object. Calling `async()` on the Request object allows you to pause the execution of the function by using the `await` keyword, until a result is obtained. The `is_error()` function returns true if there was an error. Finally, `lobby_result.as_error().message` allows you to store the error message and display it to the user. All endpoints contained in the SDK can be called using this pattern.
+Note the `async()` call. Calling `HathoraSDK.lobby_v3.create()` returns a Request object. Calling `async()` on the Request object allows you to pause the execution of the function by using the `await` keyword, until a result is obtained. The `is_error()` function returns true if there was an error. Finally, `res.as_error().message` allows you to store the error message and display it to the user. All endpoints contained in the SDK can be called using this pattern.
 
 ## SDK Example usage
 This snippet shows how to log in and join a lobby by its shortCode:
@@ -197,6 +207,19 @@ func join_room_id(room_id: String) -> void:
 	await multiplayer.connected_to_server
 	print("Connected!")
 ```
+## Exporting for the Web
+HTTPS pages like itch.io require a secure protocol. When creating a multiplayer peer, use [WebSocketMultiplayerPeer](https://docs.godotengine.org/en/stable/classes/class_websocketmultiplayerpeer.html). In the Hathora deployment settings, set the transport type to TLS.
+```gdscript
+var peer = WebSocketMultiplayerPeer.new()
+
+func create_client(host: String, port: int) -> void:
+	var err = peer.create_client("wss://" + host + ":" + str(port), TLSOptions.client(X509Certificate.new()))
+	if err:
+		return
+	multiplayer.set_multiplayer_peer(peer)
+```
+## Community demos
+- Demo Godot Hathora by Arkelen ([itch.io](https://arkelen.itch.io/demo-godot-hathora), [source code on GitLab](https://gitlab.com/arkelen/demo-web-godot-hathora)). Shows nickname login, lobby create and join, and ping calculation using the discovery_v2 endpoint.
 ## Questions?
 
 Get help and ask questions in our active Discord community:

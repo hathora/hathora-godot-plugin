@@ -4,21 +4,23 @@
 ## See the properties for the documentation of each endpoint.
 ## [br][br]Example usage:
 ## [codeblock]
+## var last_error = ""
+##
 ## func create_lobby() -> bool:
 ##      last_error = ""
 ## 
 ##      # Create a public lobby using a previously obtained playerAuth token
 ##      # The function will pause until a result is obtained
-##      var lobby_result = await HathoraSDK.lobby_v3.create(login_token, Hathora.Visibility.PUBLIC, Hathora.Region.FRANKFURT, {}).async()
+##      var res = await HathoraSDK.lobby_v3.create(login_token, Hathora.Visibility.PUBLIC, Hathora.Region.FRANKFURT).async()
 ## 
 ##      # Having obtained a result, the function continues
 ##      # If there was an error, store the error message and return
-##      if lobby_result.is_error():
-##           last_error = lobby_result.as_error().message
+##      if res.is_error():
+##           last_error = res.as_error().message
 ##           return false
 ## 
 ##      # Store the data contained in the Result
-##      lobby_data = result.get_data()
+##      lobby_data = res.get_data()
 ##      print("Created lobby with roomId ", lobby_data.roomId)
 ##      return true
 ## [/codeblock]
