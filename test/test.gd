@@ -12,6 +12,7 @@ func _ready():
 	%CreateLobbyButton.pressed.connect(_create_lobby)
 	%LoginButton.pressed.connect(_login_anonymous)
 	%JoinLobbyButton.pressed.connect(_join_by_room_id)
+	
 	if OS.has_feature("dedicated_server"):
 		print("Starting dedicated server on %s" % SERVER_PORT)
 		start_server()
@@ -84,7 +85,8 @@ func _generate_random_short_code() -> String:
 	var random_match_name = rng.randi_range(100000, 999999)
 	random_match_name = String.num_int64(random_match_name)
 	return random_match_name
-	
+
+
 func get_processes() -> void:
 	var result = await HathoraSDK.processes_v2.get_latest().async()
 	if result.is_error():
