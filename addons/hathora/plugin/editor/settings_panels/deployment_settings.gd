@@ -17,7 +17,9 @@ var path_to_tar: String:
 	set(v):
 		if read_only: return
 		path_to_tar = v
+		var car = tar_file_n.caret_column
 		tar_file_n.text = v
+		tar_file_n.caret_column = car
 		#tar_file_n.text_changed.emit(v)
 	get: return tar_file_n.text
 	

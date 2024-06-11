@@ -9,13 +9,17 @@ const HathoraProjectSettings = preload("res://addons/hathora/plugin/hathora_proj
 var build_dir_path : String :
 	set(v):
 		build_dir_path = v
+		var car = build_dir_n.caret_column
 		build_dir_n.text = v
+		build_dir_n.caret_column = car
 	get: return build_dir_n.text
 
 var build_filename : String :
 	set(v):
 		build_filename = v
+		var car = build_filename_n.caret_column
 		build_filename_n.text = v
+		build_filename_n.caret_column = car
 	get: return build_filename_n.text
 
 var selected_preset: String:
@@ -65,6 +69,7 @@ func _on_build_filename_text_changed(_new_text: String) -> void:
 func _on_project_settings_changed() -> void:
 	build_dir_path = HathoraProjectSettings.get_s("build_directory_path")
 	build_filename = HathoraProjectSettings.get_s("build_filename")
+	
 	
 func update_export_presets() -> void:
 	export_preset_n.clear()
