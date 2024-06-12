@@ -219,7 +219,7 @@ func create_client(host: String, port: int) -> void:
 	multiplayer.set_multiplayer_peer(peer)
 ```
 ## Community demos
-- Demo Godot Hathora by Arkelen ([itch.io](https://arkelen.itch.io/demo-godot-hathora), [source code on GitLab](https://gitlab.com/arkelen/demo-web-godot-hathora)). Shows nickname login, lobby create and join, and ping calculation using the discovery_v2 endpoint.
+- Demo Godot Hathora by Arkelen ([itch.io](https://arkelen.itch.io/demo-godot-hathora), [source code on GitLab](https://gitlab.com/arkelen/demo-web-godot-hathora)). Shows lobby create and join, and ping calculation using the discovery_v2 endpoint.
 ## Questions?
 
 Get help and ask questions in our active Discord community:
