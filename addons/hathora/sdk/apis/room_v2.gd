@@ -109,8 +109,8 @@ func get_connection_info(room_id: String):
 		)
 		
 		
-func update_config(room_id: String):
-	return POST("update/" + room_id).then(func (result):
+func update_config(room_id: String, room_config: String):
+	return POST("update/" + room_id, {"roomConfig": room_config}).then(func (result):
 		if result.is_error():
 			return result
 		return result
