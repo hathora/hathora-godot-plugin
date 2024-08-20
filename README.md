@@ -206,7 +206,7 @@ func join_room_id(room_id: String) -> void:
 ```
 ## SDK Documentation
 Documentation for the SDK endpoints is available inside the Godot editor. Press **Search Help** and search `hathora/sdk/client`. Due to [this Godot issue](https://github.com/godotengine/godot/issues/72406), the documentation might not show up in the search menu. As a workaround, access it through the dedicated button in the Hathora plugin. This button is only available in Godot 4.3 and above.
-<img src="images/sdk_documentation.png"/>.
+<img src="images/sdk_documentation.png"/>
 
 ## Exporting for the Web
 HTTPS pages like itch.io require a secure protocol. When creating a multiplayer peer, use [WebSocketMultiplayerPeer](https://docs.godotengine.org/en/stable/classes/class_websocketmultiplayerpeer.html). In the Hathora deployment settings, set the transport type to TLS.
