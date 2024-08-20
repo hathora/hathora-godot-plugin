@@ -13,6 +13,7 @@ This README covers:
 * [Configuration](#configuration)
 * [Calling API endpoints](#calling-api-endpoints)
 * [SDK Example usage](#sdk-example-usage)
+* [SDK Documentation](#sdk-documentation)
 * [Exporting for the Web](#exporting-for-the-web)
 * [Community demos](#community-demos)
 * [Questions?](#questions)
@@ -112,19 +113,15 @@ The SDK includes a HathoraSDK autoload, with the following functions:
 * discovery_v2
 	* get_ping_service_endpoints
 
-Documentation for the SDK endpoints is available inside the Godot editor. Press **Search Help** and search `hathora/sdk/client`.
+For more information, see the [SDK Documentation](#sdk-documentation) and the [Hathora API documentation](http://hathora.dev/api).
 
-<img src="images/sdk_documentation.png"/>
-
-
-For more information, see the [Hathora API documentation](http://hathora.dev/api).
 ## Configuration
 Configuration is saved in two locations: the appId is in the Godot project settings, and the devToken is in the config file `<project-root>/.hathora/config` or at `<project-root>/hathora_config`.
+
 ### Specifying an appId
 The SDK uses the appId specified under `Project Settings > Hathora > App Id`. When you select a target application in the plugin, its appId is automatically applied to the project settings. Alternatively, you can specify an appId by calling `HathoraSDK.set_app_id(app_id)`.
 
 ### Specifying a devToken
-
 > [!WARNING]
 > The devToken gives privileged access to your Hathora account. Never include the devToken in client builds or in your versioning system.
 
@@ -207,6 +204,10 @@ func join_room_id(room_id: String) -> void:
 	await multiplayer.connected_to_server
 	print("Connected!")
 ```
+## SDK Documentation
+Documentation for the SDK endpoints is available inside the Godot editor. Press **Search Help** and search `hathora/sdk/client`. Due to [this Godot issue](https://github.com/godotengine/godot/issues/72406), the documentation might not show up in the search menu. As a workaround, access it through the dedicated button in the Hathora plugin. This button is only available in Godot 4.3 and above.
+<img src="images/sdk_documentation.png"/>.
+
 ## Exporting for the Web
 HTTPS pages like itch.io require a secure protocol. When creating a multiplayer peer, use [WebSocketMultiplayerPeer](https://docs.godotengine.org/en/stable/classes/class_websocketmultiplayerpeer.html). In the Hathora deployment settings, set the transport type to TLS.
 ```gdscript
@@ -220,17 +221,15 @@ func create_client(host: String, port: int) -> void:
 ```
 ## Community demos
 - Demo Godot Hathora by Arkelen ([itch.io](https://arkelen.itch.io/demo-godot-hathora), [source code on GitLab](https://gitlab.com/arkelen/demo-web-godot-hathora)). Shows lobby create and join, and ping calculation using the discovery_v2 endpoint.
-## Questions?
 
+## Questions?
 Get help and ask questions in our active Discord community:
 [https://discord.com/invite/hathora](https://discord.com/invite/hathora)
 
 ## Version compatibility
-
 This addon is compatible with Godot 4.2+
 
 ## Credits
-
 **Davide Di Staso** (Lead developer - Godot plugin & SDK)
 
 **Justin Chu**
