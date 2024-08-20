@@ -10,6 +10,8 @@ func _ready() -> void:
 	$Docs.get_popup().set_item_disabled(1,
 		not EditorInterface.get_script_editor().has_method("goto_help")
 		or not FileAccess.file_exists("res://addons/hathora/sdk/client.gd"))
+	if not EditorInterface.get_script_editor().has_method("goto_help"):
+		$Docs.get_popup().set_item_tooltip(1, "Only available in Godot 4.3+")
 	$Docs.get_popup().index_pressed.connect(_on_docs_popup_index_pressed)
 	
 func _on_console_pressed() -> void:
