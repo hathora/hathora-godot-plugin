@@ -56,7 +56,7 @@ func list_active_public(player_token: String, region: Hathora.Region = -1):
 ## See [method create] for the data contained in the result.
 func get_info_by_room_id(player_token: String, room_id: String):
 	client.set_header("Authorization", "Bearer " + player_token)
-	return GET("info/roomid" + room_id).then(func (result):
+	return GET("info/roomid/" + room_id).then(func (result):
 		if result.is_error():
 			return result
 		return result
@@ -66,7 +66,7 @@ func get_info_by_room_id(player_token: String, room_id: String):
 ## See [method create] for the data contained in the result.
 func get_info_by_short_code(player_token: String, short_code: String):
 	client.set_header("Authorization", "Bearer " + player_token)
-	return GET("info/shortcode" + short_code).then(func (result):
+	return GET("info/shortcode/" + short_code).then(func (result):
 		if result.is_error():
 			return result
 		return result
