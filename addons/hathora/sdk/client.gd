@@ -31,7 +31,7 @@ const _Client = preload("../sdk/rest-client/client.gd")
 const _Lobby = preload("../sdk/apis/lobby_v3.gd")
 const _Room = preload("../sdk/apis/room_v2.gd")
 const _Auth = preload("../sdk/apis/auth_v1.gd")
-const _Processes = preload("../sdk/apis/processes_v2.gd")
+const _Processes = preload("../sdk/apis/processes_v3.gd")
 const _Discovery = preload("../sdk/apis/discovery_v2.gd")
 const _DotEnv = preload("../sdk/dotenv.gd")
 const _HathoraProjectSettings = preload("res://addons/hathora/sdk/hathora_project_settings.gd")
@@ -46,7 +46,7 @@ var room_v2 : _Room
 var auth_v1 : _Auth
 
 ## Operations to get data on active and stopped processes.
-var processes_v2 : _Processes
+var processes_v3 : _Processes
 
 ## Service that allows clients to directly ping all Hathora regions to get latency information
 var discovery_v2 : _Discovery
@@ -66,7 +66,7 @@ func _init():
 	# Dev endpoints
 	_dev_client = _Client.new(node, url, {}, tls_options)
 	room_v2 = _Room.new(_dev_client, "/rooms/v2/".path_join(app_id))
-	processes_v2 = _Processes.new(_dev_client, "/processes/v2/".path_join(app_id))
+	processes_v3 = _Processes.new(_dev_client, "/processes/v3/".path_join(app_id))
 	# Setting the dev token if found in DotEnv
 	if not _DotEnv.get_k("HATHORA_DEVELOPER_TOKEN").is_empty():
 		set_dev_token(_DotEnv.get_k("HATHORA_DEVELOPER_TOKEN"))
@@ -84,7 +84,7 @@ func set_dev_token(dev_token: String) -> void:
 ## Set an [param app_id]. Not recommended, specify the appId in the Godot ProjectSettings instead.
 func set_app_id(app_id: String) -> void:
 	room_v2 = _Room.new(_dev_client, "/rooms/v2/".path_join(app_id))
-	processes_v2 = _Processes.new(_dev_client, "/processes/v2/".path_join(app_id))
+	processes_v3 = _Processes.new(_dev_client, "/processes/v3/".path_join(app_id))
 	lobby_v3 = _Lobby.new(_player_client, "/lobby/v3/".path_join(app_id))
 	auth_v1 = _Auth.new(_no_auth_client, "/auth/v1/".path_join(app_id))
 
