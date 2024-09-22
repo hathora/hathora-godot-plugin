@@ -42,7 +42,7 @@ func delete(build_id: String, org_id: String = ""):
 # Run a specific build by buildId with optional orgId
 func run_build(build_id: String, org_id: String = ""):
 	return POST("builds/" + build_id + "/run", empty_string_stripped({
-		"orgId": org_id})).then(func (result):
+		"orgId": org_id}), {}, {}, true).then(func (result):
 		if result.is_error():
 			return result
 		return result
