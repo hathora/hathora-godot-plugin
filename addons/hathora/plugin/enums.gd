@@ -1,7 +1,5 @@
 extends RefCounted
 
-class_name Hathora
-
 enum Region {
 	SEATTLE,
 	WASHINGTON_DC,

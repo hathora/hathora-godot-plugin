@@ -126,7 +126,7 @@ func add_option_button_with_icon(p_label: String, p_choices: Array[String], icon
 	return option_button
 	
 # Add a SpinBox
-func add_spinbox(p_label: String, p_min: int, p_max: int, p_step: float) -> SpinBox:
+func add_spinbox(p_label: String, p_min: float, p_max: float, p_step: float) -> SpinBox:
 	var container = _add_row(p_label)
 	var spinbox = SpinBox.new()
 	spinbox.step = p_step
