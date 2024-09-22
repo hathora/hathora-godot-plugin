@@ -137,8 +137,11 @@ func _on_deploy_button_pressed() -> void:
 	
 	await get_tree().process_frame
 	print("[HATHORA] Create build started")
-	await %BuildDeployer.do_upload_and_create_build()
-
+	var err = await %BuildDeployer.do_upload_and_create_build()
+	if err:
+		print_rich("[color=%s][HATHORA] [b]DEPLOYMENT ERROR at %s [/b][/color]" % [get_theme_color("error_color", "Editor").to_html(), Time.get_time_string_from_system()])
+	else:
+		print_rich("[color=%s][HATHORA] [b]DEPLOYMENT SUCCESS at %s [/b][/color]" % [get_theme_color("success_color", "Editor").to_html(), Time.get_time_string_from_system()])
 	read_only = false
 
 func _on_cpu_value_changed(v: float) -> void:

@@ -21,7 +21,7 @@ func do_upload_and_create_build() -> bool:
 	var file_size = file.get_length()
 	
 	sdk.set_dev_token(DotEnv.get_k("HATHORA_DEVELOPER_TOKEN"))
-
+	
 	
 	var res = await sdk.builds_v3.create(file_size).async()
 	if res.is_error():
@@ -31,15 +31,18 @@ func do_upload_and_create_build() -> bool:
 	res = res.get_data()
 	var file_content = file.get_buffer(file_size)
 	
+	var path_absolute = file.get_path_absolute()
+	print_rich("[HATHORA] Uploading [url=%s]%s[/url]" % [path_absolute.get_base_dir(), path_absolute])
+	
 	var err = await upload_to_multipart_url(res.uploadParts, res.maxChunkSize, res.completeUploadPostRequestUrl, file_content)
 	if err:
 		print("[HATHORA] Error uploading the build to multipart URL")
 		return true
 
-	print("[HATHORA] Create build complete, running build in Hathora, this may take several minutes..")
+	print("[HATHORA] Upload complete, running build in Hathora, this may take several minutes..")
 	
 	last_created_build_id = res.buildId
-	
+
 	res = await sdk.builds_v3.run_build(last_created_build_id).async()
 	
 	if res.is_error():
@@ -77,8 +80,7 @@ func do_upload_and_create_build() -> bool:
 		print("[HATHORA] Failed to create deployment: "+ res.as_error().message)
 		return true
 
-
-	print("[HATHORA] Create deployment complete, new version deployed successfully: "+ str(res.deploymentId))
+	print("[HATHORA] Created new deployment with deploymentId: %s" % [str(res.deploymentId)])
 	# Wait for 2 seconds otherwise the API does not find the latest deployment
 	await get_tree().create_timer(2.0)
 	%LatestDeploymentGetter.get_latest_deployment()
