@@ -13,12 +13,12 @@ const DotEnv = preload("res://addons/hathora/plugin/dotenv.gd")
 @onready var sdk = %SDK
 var last_created_build_id: String
 
-func get_latest_deployment() -> void:
+func get_latest_deployment() -> Dictionary:
 	sdk.set_dev_token(DotEnv.get_k("HATHORA_DEVELOPER_TOKEN"))
 
 
 	if HathoraProjectSettings.get_s("application_id").is_empty():
-		return
+		return {}
 	%LatestDeploymentTextEdit.text = "Getting latest deployment information..."
 	var res = await sdk.deployments_v3.get_deployments(HathoraProjectSettings.get_s("application_id")).async()
 	
@@ -27,6 +27,10 @@ func get_latest_deployment() -> void:
 		print(res.as_error())
 		if res.as_error().error == 401:
 			owner.reset_token()
-		return
+		return {}
 	res = res.get_data()
+	if len(res.deployments) == 0:
+		%LatestDeploymentTextEdit.text = "No deployments found"
+		return {}
 	updated_deployment.emit(res.deployments[0])
+	return res.deployments[0]

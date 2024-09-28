@@ -73,7 +73,7 @@ func _make_settings() -> void:
 	
 	transport_type_n = add_option_button("Transport type", TRANSPORT_TYPES)
 	
-	container_port_n = add_spinbox("Container port", 0, 65535, 1.0)
+	container_port_n = add_spinbox("Container port", 1, 65535, 1.0)
 	
 	deploy_n = add_button("Deploy to Hathora", get_theme_icon("Environment", "EditorIcons"), _on_deploy_button_pressed)
 	
@@ -100,6 +100,7 @@ func _on_updated_deployment(data: Variant) -> void:
 		transport_type = "udp"
 		container_port = 7777
 		return
+		
 	requested_cpu = data.requestedCPU
 	requested_memory = data.requestedMemoryMB / 1024
 	container_port = data.defaultContainerPort.port
@@ -135,6 +136,7 @@ func _on_deploy_button_pressed() -> void:
 	await get_tree().process_frame
 	print("[HATHORA] Create build started")
 	var err = await %BuildDeployer.do_upload_and_create_build()
+	
 	if err:
 		print_rich("[color=%s][HATHORA] [b]DEPLOYMENT ERROR at %s [/b][/color]" % [get_theme_color("error_color", "Editor").to_html(), Time.get_time_string_from_system()])
 	else:

@@ -51,6 +51,8 @@ func do_upload_and_create_build() -> bool:
 		print("[HATHORA] Failed to run build: "+ res.as_error().message)
 		return true
 	
+	print("[HATHORA] Created new build with buildId: %s" % [str(last_created_build_id)])
+	
 	var deployment_config := {
 		"requestedCPU" = %DeploymentSettings.requested_cpu,
 		"requestedMemoryMB" = %DeploymentSettings.requested_memory * 1024,
@@ -61,14 +63,17 @@ func do_upload_and_create_build() -> bool:
 		"buildId" = last_created_build_id,
 		"idleTimeoutEnabled" = false
 	}
+		
 	
-
+	if HathoraProjectSettings.get_s("application_id").is_empty():
+		print("[HATHORA] Empty appId, cannot create a new deployment")
+		return true
+	
 	# This would automatically update the Deployment Settings, but we do not care because they are remporarily set to read only
-	%LatestDeploymentGetter.get_latest_deployment()
-	var data = await %LatestDeploymentGetter.updated_deployment
+	var data : Dictionary = await %LatestDeploymentGetter.get_latest_deployment()
+
 	# The API returns resource arrays, which we need to transform into an array of dictionaries
 	
-	#TODO: test this
 	if "env" in data:
 		deployment_config.env = data.env
 	if "additionalContainerPorts" in data:
