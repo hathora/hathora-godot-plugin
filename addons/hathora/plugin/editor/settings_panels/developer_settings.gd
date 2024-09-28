@@ -62,6 +62,7 @@ func clear_apps() -> void:
 
 func _on_app_selected(index:int) -> void:
 	HathoraProjectSettings.set_s("application_id", selected_app_id)
+	%SDK.set_app_id(selected_app_id)
 	%LatestDeploymentGetter.get_latest_deployment()
 
 	
