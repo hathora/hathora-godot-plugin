@@ -25,6 +25,8 @@ func get_latest_deployment() -> void:
 	if res.is_error():
 		print("[HATHORA] Error getting the latest deployment")
 		print(res.as_error())
+		if res.as_error().error == 401:
+			owner.reset_token()
 		return
 	res = res.get_data()
 	updated_deployment.emit(res.deployments[0])

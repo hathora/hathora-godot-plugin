@@ -73,8 +73,9 @@ func refresh_applications() -> void:
 		clear_apps()
 		%LatestDeploymentTextEdit.text = "Error getting latest deployment information"
 		print(res.as_error())
+		if res.as_error().error == 401:
+			owner.reset_token()
 		return
-		#TODO: reset if token is invalid
 	clear_apps()
 	var apps = res.get_data().applications
 	# If the user has no applications

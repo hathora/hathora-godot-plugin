@@ -45,6 +45,8 @@ func _on_create_room_button_pressed():
 	if res.is_error():
 		print("[HATHORA] Error creating a room")
 		print(res.as_error())
+		if res.as_error().error == 401:
+			owner.reset_token()
 		return
 	
 	var room_id = res.get_data().roomId

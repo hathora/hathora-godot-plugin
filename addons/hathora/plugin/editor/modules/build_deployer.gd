@@ -26,6 +26,8 @@ func do_upload_and_create_build() -> bool:
 	var res = await sdk.builds_v3.create(file_size).async()
 	if res.is_error():
 		print("[HATHORA] Failed to create build: "+ res.as_error().message)
+		if res.as_error().error == 401:
+			owner.reset_token()
 		return true
 	
 	res = res.get_data()
