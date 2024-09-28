@@ -109,8 +109,12 @@ func update_export_presets() -> void:
 		if not preset['architecture_supported']:
 			export_preset_n.set_item_text(export_preset_n.item_count - 1, preset['name'] + " (" + preset['architecture'] + " not supported)")
 	
-	export_preset_n.selected = export_preset_n.get_selectable_item()
-
+	var i = export_preset_n.get_selectable_item()
+	if i == -1:
+		export_preset_n.disabled = true
+		export_preset_n.tooltip_text = "No presets found"
+		return
+	export_preset_n.selected = i
 func _on_generate_server_build_button_pressed():
 	if ! await _generate_server_build():
 		_print_fail()
