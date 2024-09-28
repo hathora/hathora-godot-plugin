@@ -84,7 +84,7 @@ func refresh_applications() -> void:
 		target_app_n.add_item("No applications found")
 		target_app_n.set_item_disabled(0, true)
 		target_app_n.selected = target_app_n.get_selectable_item()
-		print("[HATHORA] No applications found, create a new one at console.hathora.dev")
+		print_rich("[HATHORA] No applications found, create a new one at [url=http://console.hathora.dev]console.hathora.dev[/url]")
 		%LatestDeploymentTextEdit.text = "No applications found, create a new one at console.hathora.dev"
 		return
 	for app in apps:
