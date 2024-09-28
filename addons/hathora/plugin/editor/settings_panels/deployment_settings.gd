@@ -119,9 +119,6 @@ func _on_deploy_button_pressed() -> void:
 	if DotEnv.get_k("HATHORA_DEVELOPER_TOKEN").is_empty():
 		print("[HATHORA] Need valid developer token to deploy")
 		return
-	if HathoraProjectSettings.get_s("application_id").is_empty():
-		print("[HATHORA] No application selected")
-		return
 	if HathoraProjectSettings.get_s("build_directory_path").is_empty():
 		print("[HATHORA] Need valid build directory path")
 		return
