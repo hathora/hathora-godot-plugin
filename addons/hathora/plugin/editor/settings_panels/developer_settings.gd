@@ -5,6 +5,7 @@ const DotEnv = preload("res://addons/hathora/plugin/dotenv.gd")
 const HathoraProjectSettings = preload("res://addons/hathora/plugin/hathora_project_settings.gd")
 
 @onready var sdk = %SDK
+@onready var room_section_toggle: Button = %RoomSectionToggle
 
 var dev_token : String :
 	set(v):
@@ -27,6 +28,7 @@ var selected_app_id: String :
 		for i in range(target_app_n.item_count):
 			if target_app_n.get_item_metadata(i) == v:
 				target_app_n.select(i)
+				break
 
 var dev_token_n : LineEdit
 var target_app_n : OptionButton
@@ -58,6 +60,8 @@ func add_app(p_app_name: String, p_app_id: String) -> void:
 
 func clear_apps() -> void:
 	target_app_n.clear()
+	target_app_n.disabled = false
+	target_app_n.tooltip_text = ""
 
 
 func _on_app_selected(index:int) -> void:
@@ -67,6 +71,8 @@ func _on_app_selected(index:int) -> void:
 
 	
 func refresh_applications() -> void:
+	room_section_toggle.disabled = false
+	room_section_toggle.tooltip_text = ""
 	# Update config, in case user has since logged in
 	sdk.set_dev_token(DotEnv.get_k("HATHORA_DEVELOPER_TOKEN"))
 	var res = await sdk.apps_v2.get_apps().async()
@@ -81,10 +87,15 @@ func refresh_applications() -> void:
 	var apps = res.get_data().applications
 	# If the user has no applications
 	if len(apps) == 0:
-		target_app_n.add_item("No applications found")
-		target_app_n.set_item_disabled(0, true)
-		target_app_n.selected = target_app_n.get_selectable_item()
 		print_rich("[HATHORA] No applications found, create a new one at [url=http://console.hathora.dev]console.hathora.dev[/url]")
+		target_app_n.disabled = true
+		target_app_n.tooltip_text = "No applications found"
+		HathoraProjectSettings.set_s("application_id", "")
+		\
+		room_section_toggle.button_pressed = false
+		room_section_toggle.disabled = true
+		room_section_toggle.tooltip_text = "No target application selected"
+		
 		%LatestDeploymentTextEdit.text = "No applications found, create a new one at console.hathora.dev"
 		return
 	for app in apps:
@@ -95,8 +106,9 @@ func refresh_applications() -> void:
 	# If we have an appId in our environment, try to select that app
 	if not HathoraProjectSettings.get_s("application_id").is_empty():
 		for i in range(target_app_n.item_count):
-			if target_app_n.get_item_metadata(i) == HathoraProjectSettings.get_s("build_directory_path"):
+			if target_app_n.get_item_metadata(i) == HathoraProjectSettings.get_s("application_id"):
 				target_app_n.select(i)
+				break
 	
 	_on_app_selected(target_app_n.selected)
 

@@ -23,7 +23,10 @@ var build_filename : String :
 	get: return build_filename_n.text
 
 var selected_preset: String:
-	get: return export_preset_n.get_item_text(export_preset_n.selected)
+	get: 
+		if export_preset_n.selected == -1:
+			return ""
+		return export_preset_n.get_item_text(export_preset_n.selected)
 
 var generate_tar_file: bool:
 	get: return generate_tar_n.button_pressed
@@ -72,7 +75,7 @@ func _on_project_settings_changed() -> void:
 	
 	
 func update_export_presets() -> void:
-	export_preset_n.clear()
+	clear_presets()
 
 	var file := ConfigFile.new()
 	if file.load(EXPORT_PRESETS_PATH) != OK:
@@ -112,9 +115,15 @@ func update_export_presets() -> void:
 	var i = export_preset_n.get_selectable_item()
 	if i == -1:
 		export_preset_n.disabled = true
-		export_preset_n.tooltip_text = "No presets found"
+		export_preset_n.tooltip_text = "No Linux presets found"
 		return
 	export_preset_n.selected = i
+
+func clear_presets() -> void:
+	export_preset_n.clear()
+	export_preset_n.tooltip_text = ""
+	export_preset_n.disabled = false
+
 func _on_generate_server_build_button_pressed():
 	if ! await _generate_server_build():
 		_print_fail()
