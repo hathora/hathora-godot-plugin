@@ -91,7 +91,7 @@ func refresh_applications() -> void:
 		target_app_n.disabled = true
 		target_app_n.tooltip_text = "No applications found"
 		HathoraProjectSettings.set_s("application_id", "")
-		\
+		
 		room_section_toggle.button_pressed = false
 		room_section_toggle.disabled = true
 		room_section_toggle.tooltip_text = "No target application selected"
