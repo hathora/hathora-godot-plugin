@@ -14,12 +14,11 @@ static func config():
 	var err = config.load(CONFIG_PATH)
 	
 	if err:
-		print("[HATHORA] Hathora config not found at " + CONFIG_PATH)
-		print("[HATHORA] Creating new config file at " + CONFIG_PATH)
+		print("[HATHORA] Hathora config not found at " + CONFIG_PATH+". Creating a new one.")
 		
 		var dir_err = DirAccess.make_dir_recursive_absolute(BUILDS_PATH)
 		if dir_err:
-			print("[HATHORA] Error creating " + BUILDS_PATH + " directory. Could not create Hathora config file")
+			print("[HATHORA] Error creating " + BUILDS_PATH + " directory. Could not create Hathora config file.")
 			return
 		config.save(CONFIG_PATH)
 		return
