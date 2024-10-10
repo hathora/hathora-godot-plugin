@@ -66,7 +66,7 @@ func _make_settings() -> void:
 	requested_cpu_n = add_spinbox("CPU (cores)", 0.5, 4, 0.1)
 	requested_cpu_n.value_changed.connect(_on_cpu_value_changed)
 	
-	requested_memory_n = add_spinbox("Memory (GB)", 1, 8, 0.1)
+	requested_memory_n = add_spinbox("Memory (GB)", 1, 8, 0.2)
 	requested_memory_n.value_changed.connect(_on_memory_value_changed)
 	
 	rooms_per_process_n = add_spinbox("Rooms per process", 1, 10000, 1.0)
