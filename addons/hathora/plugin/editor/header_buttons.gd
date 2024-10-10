@@ -31,7 +31,7 @@ func _on_docs_popup_index_pressed(index: int) -> void:
 				"res://addons/hathora/sdk/apis/auth_v1.gd",
 				"res://addons/hathora/sdk/apis/discovery_v2.gd",
 				"res://addons/hathora/sdk/apis/lobby_v3.gd",
-				"res://addons/hathora/sdk/apis/processes_v2.gd",
+				"res://addons/hathora/sdk/apis/processes_v3.gd",
 				"res://addons/hathora/sdk/apis/room_v2.gd"]
 			for path in script_paths:
 				var script = load(path)
