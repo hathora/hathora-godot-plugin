@@ -14,7 +14,6 @@ var temp: String
 
 
 func _ready():
-	DotEnv.config()
 	if not isReady:
 		start()
 
