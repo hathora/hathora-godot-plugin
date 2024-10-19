@@ -74,18 +74,6 @@ func _get_connection_info(room_id: String) -> void:
 	host_n.text = str(res.exposedPort.host)
 	port_n.text = str(res.exposedPort.port)
 
-func _get_connecton_info_callback_error(err):
-	print("[HATHORA] " + str(err))
-	host_n.text = ""
-	port_n.text = ""
-	if err.response_code == 401:
-		owner.reset_token()
-			
-func _create_room_callback_error(err):
-	print("[HATHORA] " + str(err))
-	if err.response_code == 401:
-		owner.reset_token()
-
 func _on_room_id_copy_button_pressed() -> void:
 	if not room_id_n.text.is_empty():
 		DisplayServer.clipboard_set(room_id_n.text)
