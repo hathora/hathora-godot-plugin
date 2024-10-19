@@ -66,7 +66,7 @@ func _init():
 	# Dev endpoints
 	_dev_client = _Client.new(node, url, {}, tls_options)
 	room_v2 = _Room.new(_dev_client, "/rooms/v2/".path_join(app_id))
-	processes_v3 = _Processes.new(_dev_client, "/processes/v3/".path_join(app_id))
+	processes_v3 = _Processes.new(_dev_client, "/processes/v3/apps".path_join(app_id))
 	# Setting the dev token if found in DotEnv
 	if not _DotEnv.get_k("HATHORA_DEVELOPER_TOKEN").is_empty():
 		set_dev_token(_DotEnv.get_k("HATHORA_DEVELOPER_TOKEN"))
@@ -84,7 +84,7 @@ func set_dev_token(dev_token: String) -> void:
 ## Set an [param app_id]. Not recommended, specify the appId in the Godot ProjectSettings instead.
 func set_app_id(app_id: String) -> void:
 	room_v2 = _Room.new(_dev_client, "/rooms/v2/".path_join(app_id))
-	processes_v3 = _Processes.new(_dev_client, "/processes/v3/".path_join(app_id))
+	processes_v3 = _Processes.new(_dev_client, "/processes/v3/apps".path_join(app_id))
 	lobby_v3 = _Lobby.new(_player_client, "/lobby/v3/".path_join(app_id))
 	auth_v1 = _Auth.new(_no_auth_client, "/auth/v1/".path_join(app_id))
 
