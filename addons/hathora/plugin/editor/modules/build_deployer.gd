@@ -34,17 +34,24 @@ func do_upload_and_create_build() -> bool:
 	var file_content = file.get_buffer(file_size)
 	
 	var path_absolute = file.get_path_absolute()
-	var mb_size = len(file_content)/1024/1024
-	print_rich("[HATHORA] Uploading [url=%s]%s[/url] (%sMB)" % [path_absolute.get_base_dir(), path_absolute, str(mb_size)])
+	var mb_size = str(get_size_in_mb(file_content))
+	print_rich("[HATHORA] Uploading [url=%s]%s[/url] (%sMB)" % [path_absolute.get_base_dir(), path_absolute, mb_size])
 	
+	#Create HTTP request
 	var http_request = HTTPRequest.new()
+	http_request.timeout = 900
+	if OS.get_name() != "Web":
+		http_request.use_threads = true
 	add_child(http_request)
+	
+	#Upload the build
 	var err = await upload_to_multipart_url(http_request, res.uploadParts, res.maxChunkSize, res.completeUploadPostRequestUrl, file_content)
+	http_request.queue_free()
+	
 	if err:
 		print("[HATHORA] Error uploading the build to multipart URL")
-		http_request.queue_free()
 		return true
-	http_request.queue_free()
+	
 	print("[HATHORA] Upload complete, running build in Hathora, this may take several minutes..")
 	
 	last_created_build_id = res.buildId
@@ -118,8 +125,8 @@ func upload_to_multipart_url(
 		var file_chunk = file.slice(start_byte_for_part, end_byte_for_part - start_byte_for_part)
 
 		# Upload each chunk using an HTTPRequest node
-		var mb_size = len(file_chunk)/1024/1024
-		print("[HATHORA] Uploading part {part_number} ({mb_size}MB) of {total_parts}...".format({"part_number":part_number, "mb_size": str(mb_size), "total_parts":len(multipart_upload_parts)}))
+		var mb_size = str(get_size_in_mb(file_chunk))
+		print("[HATHORA] Uploading part {part_number} ({mb_size}MB) of {total_parts}...".format({"part_number":part_number, "mb_size": mb_size, "total_parts":len(multipart_upload_parts)}))
 		var err = http_request.request_raw(put_request_url, PackedStringArray(["Content-Type : application/octet-stream"]), HTTPClient.METHOD_PUT, file_chunk)
 		if err != OK:
 			print("[HATHORA] Build upload HTTP request fail")
@@ -168,3 +175,8 @@ func upload_to_multipart_url(
 		return true
 	
 	return false
+
+func get_size_in_mb(chunk: PackedByteArray) -> float:
+	var mb_size = float(len(chunk))/1024/1024
+	mb_size = snapped(mb_size, 0.01)
+	return mb_size
