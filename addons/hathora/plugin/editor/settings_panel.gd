@@ -144,6 +144,7 @@ func add_button(p_text: String, p_icon: Texture2D, on_pressed: Callable) -> Butt
 	var button = Button.new()
 	button.text = p_text
 	button.icon = p_icon
+	button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	button.add_theme_stylebox_override("normal", get_theme_stylebox("normal", "InspectorActionButton"))
 	button.add_theme_stylebox_override("pressed", get_theme_stylebox("pressed", "InspectorActionButton"))
 	button.add_theme_stylebox_override("hover", get_theme_stylebox("hover", "InspectorActionButton"))
