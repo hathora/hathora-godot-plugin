@@ -34,13 +34,17 @@ func do_upload_and_create_build() -> bool:
 	var file_content = file.get_buffer(file_size)
 	
 	var path_absolute = file.get_path_absolute()
-	print_rich("[HATHORA] Uploading [url=%s]%s[/url]" % [path_absolute.get_base_dir(), path_absolute])
+	var mb_size = len(file_content)/1024/1024
+	print_rich("[HATHORA] Uploading [url=%s]%s[/url] (%sMB)" % [path_absolute.get_base_dir(), path_absolute, str(mb_size)])
 	
-	var err = await upload_to_multipart_url(res.uploadParts, res.maxChunkSize, res.completeUploadPostRequestUrl, file_content)
+	var http_request = HTTPRequest.new()
+	add_child(http_request)
+	var err = await upload_to_multipart_url(http_request, res.uploadParts, res.maxChunkSize, res.completeUploadPostRequestUrl, file_content)
 	if err:
 		print("[HATHORA] Error uploading the build to multipart URL")
+		http_request.queue_free()
 		return true
-
+	http_request.queue_free()
 	print("[HATHORA] Upload complete, running build in Hathora, this may take several minutes..")
 	
 	last_created_build_id = res.buildId
@@ -96,11 +100,13 @@ func do_upload_and_create_build() -> bool:
 # Function to upload parts
 # Helper function to upload file in parts
 func upload_to_multipart_url(
+	http_request: HTTPRequest,
 	multipart_upload_parts: Array, 
 	max_chunk_size: int, 
 	complete_upload_post_request_url: String, 
 	file: PackedByteArray
 ) -> bool:
+	
 	var upload_promises = []
 	
 	for part in multipart_upload_parts:
@@ -112,23 +118,28 @@ func upload_to_multipart_url(
 		var file_chunk = file.slice(start_byte_for_part, end_byte_for_part - start_byte_for_part)
 
 		# Upload each chunk using an HTTPRequest node
-		var http_request := HTTPRequest.new()
-		add_child(http_request)
+		var mb_size = len(file_chunk)/1024/1024
+		print("[HATHORA] Uploading part {part_number} ({mb_size}MB) of {total_parts}...".format({"part_number":part_number, "mb_size": str(mb_size), "total_parts":len(multipart_upload_parts)}))
 		var err = http_request.request_raw(put_request_url, PackedStringArray(["Content-Type : application/octet-stream"]), HTTPClient.METHOD_PUT, file_chunk)
 		if err != OK:
 			print("[HATHORA] Build upload HTTP request fail")
 			return true
-		var res = await http_request.request_completed
 		
-
+		var res = await http_request.request_completed
+		if res[1] != 200:
+			print("[HATHORA] HTTP error " + str(res[1]))
+			var xml : PackedByteArray = res[3]
+			print("[HATHORA] HTTP response body: " + xml.get_string_from_utf8())
+			return true
 		var headers = res[2]
 		var etag := ""
 		for header in headers:
 			if header.begins_with("ETag:"):
 				etag = header.split(": ")[1]
+		print_debug(etag)
 
 		if etag.is_empty():
-			push_error("ETag not found in response headers for part " + str(part_number))
+			print("[HATHORA] ETag not found in response headers for part " + str(part_number))
 			return true
 
 		upload_promises.append({ "ETag": etag, "PartNumber": part_number })
@@ -146,8 +157,6 @@ func upload_to_multipart_url(
 		""" % [str(part["PartNumber"]), str(part["ETag"])]
 
 	var xml_body = "<CompleteMultipartUpload>%s</CompleteMultipartUpload>" % xml_parts
-	var http_request := HTTPRequest.new()
-	add_child(http_request)
 	var err = http_request.request(complete_upload_post_request_url, PackedStringArray(["Content-Type : application/xml"]), HTTPClient.METHOD_POST, xml_body)
 	if err != OK:
 		print("[HATHORA] Build upload HTTP request fail")
