@@ -136,7 +136,6 @@ func upload_to_multipart_url(
 		for header in headers:
 			if header.begins_with("ETag:"):
 				etag = header.split(": ")[1]
-		print_debug(etag)
 
 		if etag.is_empty():
 			print("[HATHORA] ETag not found in response headers for part " + str(part_number))
