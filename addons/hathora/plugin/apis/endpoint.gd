@@ -37,7 +37,7 @@ func _null_stripped(from : Dictionary):
 		out[k] = from[k]
 	return out
 	
-func empty_string_stripped(from : Dictionary):
+func empty_string_stripped(from : Dictionary) -> Dictionary:
 	var out = {}
 	for k in from:
 		if from[k] is String and from[k].is_empty():
@@ -45,6 +45,20 @@ func empty_string_stripped(from : Dictionary):
 		out[k] = from[k]
 	return out
 
+func empty_array_stripped(from: Dictionary) -> Dictionary:
+	var out = {}
+	for k in from:
+		if from[k] is Array and from[k].is_empty():
+			continue
+		out[k] = from[k]
+	return out
+	
+func to_array_string(from: Array, mapping: Dictionary) -> Array[String]:
+	var out: Array[String] = []
+	for i in from:
+		if mapping.has(i):
+			out.append(mapping[i])
+	return out
 
 ## Parses a result from the REST client into a PolyResult.
 static func parse_result(result, binary:=false) -> PolyResult:
