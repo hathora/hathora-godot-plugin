@@ -83,14 +83,18 @@ func set_header(header : String, value=null):
 
 
 ## Returns an HTTP query string from the given Dictionary.
-func query_from_dict(query : Dictionary) -> String:
+func query_from_dict(query: Dictionary) -> String:
 	if query.is_empty():
 		return ""
 	var q := ""
 	for k in query:
-		q += str(k).uri_encode() + "=" + str(query[k]).uri_encode() + "&"
+		if query[k] is Array:  # Check if the value is an array
+			for item in query[k]:
+				q += str(k).uri_encode() + "=" + str(item).uri_encode() + "&"
+		else:
+			q += str(k).uri_encode() + "=" + str(query[k]).uri_encode() + "&"
 	if q.ends_with("&"):
-		return q.substr(0, q.length()-1)
+		return q.substr(0, q.length() - 1)
 	return q
 
 
