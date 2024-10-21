@@ -4,10 +4,10 @@ extends "endpoint.gd"
 
 ## Retrieve the 10 most recent processes objects for an application. Filter the array by optionally passing in a status or region.
 ## [br][br]Returns an array. See [method get_process] for the data contained in each element of the array.
-func get_latest(status: Hathora.ProcessStatus = -1, region: Hathora.Region = -1):
-	return GET("processes/latest", empty_string_stripped({
-		"status": Hathora.PROCESS_STATUSES.get(status, ""),
-		"region": Hathora.REGION_NAMES.get(region, "")})).then(func(result):
+func get_latest(statuses: Array[Hathora.ProcessStatus] = [], regions: Array[Hathora.Region] = []):
+	return GET("processes/latest", empty_array_stripped({
+		"status": to_array_string(statuses, Hathora.PROCESS_STATUSES),
+		"region": to_array_string(regions, Hathora.REGION_NAMES)})).then(func(result):
 		if result.is_error():
 			return result
 		return result
@@ -15,10 +15,10 @@ func get_latest(status: Hathora.ProcessStatus = -1, region: Hathora.Region = -1)
 
 ## Count the number of processes objects for an application. Filter by optionally passing in a status or region.
 ## [br][br]Returns process count: [float]
-func get_count(status: Hathora.ProcessStatus = -1, region: Hathora.Region = -1):
-	return GET("processes/count", empty_string_stripped({
-		"status": Hathora.PROCESS_STATUSES.get(status, ""),
-		"region": Hathora.REGION_NAMES.get(region, "")})).then(func(result):
+func get_count(statuses: Array[Hathora.ProcessStatus] = [], regions: Array[Hathora.Region] = []):
+	return GET("processes/count", empty_array_stripped({
+		"status": to_array_string(statuses, Hathora.PROCESS_STATUSES),
+		"region": to_array_string(regions, Hathora.REGION_NAMES)})).then(func(result):
 		if result.is_error():
 			return result
 		return result
