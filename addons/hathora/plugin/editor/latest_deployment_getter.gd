@@ -1,4 +1,3 @@
-#TODO: test with 0 applications
 @tool
 extends Node
 

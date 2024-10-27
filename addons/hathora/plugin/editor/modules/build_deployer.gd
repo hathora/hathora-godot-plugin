@@ -1,4 +1,3 @@
-#TODO: Reset token in case of token error
 @tool
 extends Node
 
