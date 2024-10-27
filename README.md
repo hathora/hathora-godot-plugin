@@ -107,9 +107,12 @@ The SDK includes a HathoraSDK autoload, with the following functions:
 	* list_active_public
 	* get_info_by_room_id
 	* get_info_by_short_code
-* processes_v2
-	* get_info
+* processes_v3
 	* get_latest
+	* get_count
+	* create
+	* get_process
+	* stop
 * discovery_v2
 	* get_ping_service_endpoints
 
