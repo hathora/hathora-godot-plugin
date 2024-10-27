@@ -1,5 +1,8 @@
 ## Operations to create, manage, and connect to rooms.
 extends "endpoint.gd"
+
+const Enums = preload("res://addons/hathora/plugin/enums.gd")
+
 ## Create a new room for an existing application.
 ## Poll the [method get_info] endpoint to get connection details for an active room.
 ## Takes:
@@ -21,9 +24,9 @@ extends "endpoint.gd"
 ## [br][br] [code]status[/code]: [enum Hathora.RoomStatus]
 ## [br][br] [code]roomId[/code]: [String]
 ## [br][br] [code]processId[/code]: [String]
-func create(region: Hathora.Region, room_config:= "", room_id = ""):
+func create(region: Enums.Region, room_config:= "", room_id = ""):
 	return POST("create", empty_string_stripped({
-		"region": Hathora.REGION_NAMES[region],
+		"region": Enums.REGION_NAMES[region],
 		"roomConfig": room_config,
 	}),
 	empty_string_stripped({"roomId": room_id})).then(func (result):
