@@ -2,11 +2,10 @@
 extends "../settings_panel.gd"
 
 const DotEnv = preload("res://addons/hathora/plugin/dotenv.gd")
-const ApiConfig = preload("res://addons/hathora/plugin/core/ApiConfig.gd")
-const AppV1Api = preload("res://addons/hathora/plugin/apis/AppV1Api.gd")
 const HathoraProjectSettings = preload("res://addons/hathora/plugin/hathora_project_settings.gd")
 
-var config: ApiConfig
+@onready var sdk = %SDK
+@onready var room_section_toggle: Button = %RoomSectionToggle
 
 var dev_token : String :
 	set(v):
@@ -29,6 +28,7 @@ var selected_app_id: String :
 		for i in range(target_app_n.item_count):
 			if target_app_n.get_item_metadata(i) == v:
 				target_app_n.select(i)
+				break
 
 var dev_token_n : LineEdit
 var target_app_n : OptionButton
@@ -42,8 +42,8 @@ func _make_settings() -> void:
 	target_app_n = add_option_button_with_icon("Target application", [], get_theme_icon("Reload", "EditorIcons"), refresh_applications)
 	target_app_n.item_selected.connect(_on_app_selected)
 	login_button_n = add_button("Login with another account", get_theme_icon("CryptoKey", "EditorIcons"), owner._on_login_button_pressed)
-	config = ApiConfig.new()
-	config.set_security_auth0(DotEnv.get_k("HATHORA_DEVELOPER_TOKEN"))
+	
+	sdk.set_dev_token(DotEnv.get_k("HATHORA_DEVELOPER_TOKEN"))
 	if DotEnv.get_k("HATHORA_DEVELOPER_TOKEN"):
 		refresh_applications()
 	ProjectSettings.settings_changed.connect(_on_project_settings_changed)
@@ -60,52 +60,57 @@ func add_app(p_app_name: String, p_app_id: String) -> void:
 
 func clear_apps() -> void:
 	target_app_n.clear()
+	target_app_n.disabled = false
+	target_app_n.tooltip_text = ""
 
 
 func _on_app_selected(index:int) -> void:
 	HathoraProjectSettings.set_s("application_id", selected_app_id)
+	%SDK.set_app_id(selected_app_id)
 	%LatestDeploymentGetter.get_latest_deployment()
 
 	
 func refresh_applications() -> void:
+	room_section_toggle.disabled = false
+	room_section_toggle.tooltip_text = ""
 	# Update config, in case user has since logged in
-	config.set_security_auth0(DotEnv.get_k("HATHORA_DEVELOPER_TOKEN"))
-	var appApi = AppV1Api.new(config)
-	appApi.get_apps(_get_apps_callback_success, _get_apps_callback_error)
-
-	
-func _get_apps_callback_success(response) -> void:
-	# Clear existing apps
+	sdk.set_dev_token(DotEnv.get_k("HATHORA_DEVELOPER_TOKEN"))
+	var res = await sdk.apps_v2.get_apps().async()
+	if res.is_error():
+		clear_apps()
+		%LatestDeploymentTextEdit.text = "Error getting latest deployment information"
+		print(res.as_error())
+		if res.as_error().error == 401:
+			owner.reset_token()
+		return
 	clear_apps()
+	var apps = res.get_data().applications
 	# If the user has no applications
-	if len(response.data) == 0:
-		target_app_n.add_item("No applications found")
-		target_app_n.set_item_disabled(0, true)
-		target_app_n.selected = target_app_n.get_selectable_item()
-		print("[HATHORA] No applications found, create a new one at console.hathora.dev")
+	if len(apps) == 0:
+		print_rich("[HATHORA] No applications found, create a new one at [url=http://console.hathora.dev]console.hathora.dev[/url]")
+		target_app_n.disabled = true
+		target_app_n.tooltip_text = "No applications found"
+		HathoraProjectSettings.set_s("application_id", "")
+		
+		room_section_toggle.button_pressed = false
+		room_section_toggle.disabled = true
+		room_section_toggle.tooltip_text = "No target application selected"
+		
 		%LatestDeploymentTextEdit.text = "No applications found, create a new one at console.hathora.dev"
 		return
-		
-	for application in response.data:
-		add_app(application.appName, application.appId)
+	for app in apps:
+		add_app(app.appName, app.appId)
 		
 	target_app_n.selected = target_app_n.get_selectable_item()
 	
 	# If we have an appId in our environment, try to select that app
 	if not HathoraProjectSettings.get_s("application_id").is_empty():
 		for i in range(target_app_n.item_count):
-			if target_app_n.get_item_metadata(i) == HathoraProjectSettings.get_s("build_directory_path"):
+			if target_app_n.get_item_metadata(i) == HathoraProjectSettings.get_s("application_id"):
 				target_app_n.select(i)
+				break
 	
 	_on_app_selected(target_app_n.selected)
-
-
-func _get_apps_callback_error(err) -> void:
-	clear_apps()
-	%LatestDeploymentTextEdit.text = "Error getting latest deployment information"
-	print("[HATHORA] " + str(err))
-	if err.response_code == 401:
-		owner.reset_token()
 
 
 # Toggle dev token secret

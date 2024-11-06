@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://cme6nmukjil8s"]
+[gd_scene load_steps=17 format=3 uid="uid://cme6nmukjil8s"]
 
 [ext_resource type="Script" path="res://addons/hathora/plugin/editor/control_ui.gd" id="1_1eov4"]
 [ext_resource type="Texture2D" uid="uid://pjo82re3x7fd" path="res://addons/hathora/plugin/assets/HathoraConfigBanner.png" id="1_ov2ni"]
@@ -14,7 +14,8 @@
 [ext_resource type="Script" path="res://addons/hathora/plugin/editor/settings_panels/deployment_settings.gd" id="8_kwcbp"]
 [ext_resource type="Script" path="res://addons/hathora/plugin/editor/settings_panels/room_settings.gd" id="9_lsqtf"]
 [ext_resource type="Script" path="res://addons/hathora/plugin/editor/latest_deployment_info.gd" id="9_qjw1b"]
-[ext_resource type="Script" path="res://addons/hathora/plugin/editor/latest_deployment.gd" id="14_mcull"]
+[ext_resource type="Script" path="res://addons/hathora/plugin/editor/latest_deployment_getter.gd" id="15_mejlx"]
+[ext_resource type="Script" path="res://addons/hathora/plugin/client.gd" id="16_qf06x"]
 
 [node name="Hathora" type="VBoxContainer"]
 anchors_preset = 9
@@ -94,8 +95,8 @@ layout_mode = 2
 [node name="Label" type="Label" parent="Scroll/ScrollChild/LoginContent"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.760784, 0.760784, 0.760784, 1)
-horizontal_alignment = 1
 text = "Create an account or log in to Hathora Cloud to get started"
+horizontal_alignment = 1
 autowrap_mode = 3
 
 [node name="LoginButton" type="Button" parent="Scroll/ScrollChild/LoginContent"]
@@ -116,7 +117,6 @@ custom_minimum_size = Vector2(2.08165e-12, 150)
 layout_mode = 2
 focus_mode = 1
 theme_override_colors/default_color = Color(0, 0, 0, 1)
-theme_override_font_sizes/normal_font_size = 16
 scroll_active = false
 autowrap_mode = 0
 script = ExtResource("3_0p138")
@@ -124,11 +124,6 @@ script = ExtResource("3_0p138")
 [node name="DeveloperSectionToggle" type="Button" parent="Scroll/ScrollChild/MainContentPanel/MainContent" node_paths=PackedStringArray("node_to_show")]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
 toggle_mode = true
 button_pressed = true
 text = "Developer Settings"
@@ -148,11 +143,11 @@ script = ExtResource("4_lffpm")
 
 [node name="BuildSectionToggle" type="Button" parent="Scroll/ScrollChild/MainContentPanel/MainContent" node_paths=PackedStringArray("node_to_show")]
 layout_mode = 2
-theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0.95, 0.95, 0.95, 1)
+theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 toggle_mode = true
 text = "Server Build Settings"
 alignment = 0
@@ -172,11 +167,11 @@ script = ExtResource("6_o00nj")
 
 [node name="DeploySectionToggle" type="Button" parent="Scroll/ScrollChild/MainContentPanel/MainContent" node_paths=PackedStringArray("node_to_show")]
 layout_mode = 2
-theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0.95, 0.95, 0.95, 1)
+theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 toggle_mode = true
 text = "Deployment Settings"
 alignment = 0
@@ -195,12 +190,13 @@ layout_mode = 2
 script = ExtResource("8_kwcbp")
 
 [node name="RoomSectionToggle" type="Button" parent="Scroll/ScrollChild/MainContentPanel/MainContent" node_paths=PackedStringArray("node_to_show")]
+unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_color = Color(0, 0, 0, 1)
-theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
-theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
-theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0.95, 0.95, 0.95, 1)
+theme_override_colors/font_color = Color(0.875, 0.875, 0.875, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 toggle_mode = true
 text = "Create Room"
 alignment = 0
@@ -231,14 +227,7 @@ text = "Latest Deployment"
 unique_name_in_owner = true
 custom_minimum_size = Vector2(2.08165e-12, 200)
 layout_mode = 2
-text = "appId: app-fffae377-8b40-4119-a1cd-56b3302924e7
-createdAt: 2024-05-27T07:42:55.949Z
-deployment: 4
-plan: tiny
-roomsPerProcess: 1
-transport: udp
-port: 7531
-"
+
 editable = false
 wrap_mode = 1
 autowrap_mode = 1
@@ -268,7 +257,12 @@ script = ExtResource("6_2m224")
 
 [node name="LatestDeploymentGetter" type="Node" parent="."]
 unique_name_in_owner = true
-script = ExtResource("14_mcull")
+script = ExtResource("15_mejlx")
+
+[node name="SDK" type="Node" parent="."]
+unique_name_in_owner = true
+process_mode = 3
+script = ExtResource("16_qf06x")
 
 [node name="BuildDirFileDialog" type="FileDialog" parent="."]
 unique_name_in_owner = true

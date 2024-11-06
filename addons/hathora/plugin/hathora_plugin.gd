@@ -9,9 +9,6 @@ var control_ui: Control
 
 func _enter_tree():
 	HathoraProjectSettings.add_project_settings()
-	# Add dock
-	DotEnv.config()
-	# Add project settings
 	control_ui = preload("editor/control_ui.tscn").instantiate()
 	add_control_to_dock(DOCK_SLOT_LEFT_BR, control_ui)
 

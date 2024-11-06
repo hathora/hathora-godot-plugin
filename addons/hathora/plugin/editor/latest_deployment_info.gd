@@ -12,8 +12,9 @@ func _on_updated_deployment(data) -> void:
 		return
 	text = "appId: " + data.appId + "\n"
 	text += "createdAt: " + data.createdAt + "\n"
-	text += "deployment: " + str(data.deploymentId) + "\n"
-	text += "plan: " + str(data.planName) + "\n"
+	text += "deploymentId: " + str(data.deploymentId) + "\n"
+	text += "requestedCPU: " + str(data.requestedCPU) + "\n"
+	text += "requestedMemoryMB: " + str(data.requestedMemoryMB) + "\n"
 	text += "roomsPerProcess: " + str(data.roomsPerProcess) + "\n"
 	text += "transport: " + str(data.defaultContainerPort.transportType) + "\n"
 	text += "port: " + str(data.defaultContainerPort.port) + "\n"
