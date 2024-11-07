@@ -230,7 +230,7 @@ Get help and ask questions in our active Discord community:
 [https://discord.com/invite/hathora](https://discord.com/invite/hathora)
 
 ## Version compatibility
-This addon is compatible with Godot 4.2+
+This addon is compatible with Godot 4.3+
 
 ## Credits
 **Davide Di Staso** (Lead developer - Godot plugin & SDK)
