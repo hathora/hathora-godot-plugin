@@ -117,11 +117,11 @@ func upload_to_multipart_url(
 	var upload_promises = []
 	
 	for part in multipart_upload_parts:
-		var part_number = part["partNumber"]
-		var put_request_url = part["putRequestUrl"]
-		var start_byte_for_part = (part_number - 1) * max_chunk_size
-		var end_byte_for_part = min(part_number * max_chunk_size, file.size())
-		var file_chunk = file.slice(start_byte_for_part, end_byte_for_part)
+		var part_number : int = int(part["partNumber"])
+		var put_request_url : String = part["putRequestUrl"]
+		var start_byte_for_part : int = (part_number - 1) * max_chunk_size
+		var end_byte_for_part : int = min(part_number * max_chunk_size, file.size())
+		var file_chunk : PackedByteArray = file.slice(start_byte_for_part, end_byte_for_part)
 
 		# Upload each chunk using an HTTPRequest node
 		var mb_size = str(get_size_in_mb(file_chunk))
